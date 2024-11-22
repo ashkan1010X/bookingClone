@@ -55,7 +55,7 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
           addedPhotos.map((photo, idx) => (
             <div key={idx} className="relative h-auto">
               <img
-                className="cursor-pointer h-full object-cover rounded-3xl"
+                className="cursor-pointer aspect-square h-full w-full object-cover rounded-3xl"
                 src={`http://localhost:5000/uploads/${photo}`}
                 alt="error"
                 onClick={() =>
@@ -106,7 +106,7 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
           ))}
 
         {/* File Upload */}
-        <label className="h-32 cursor-pointer flex justify-center gap-2 shadow hover:shadow-lg transition-shadow duration-200 bg-transparent rounded-2xl p-4 py-7">
+        <label className="cursor-pointer flex items-center justify-center aspect-square gap-2 shadow hover:shadow-lg transition-shadow duration-200 bg-transparent rounded-2xl p-4 py-7">
           <input
             type="file"
             className="hidden"

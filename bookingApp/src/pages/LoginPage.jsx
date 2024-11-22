@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [redirect, setRedirect] = useState(false);
   const { setUser } = useContext(UserContext);
   const [passVisible, setPassVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleLoginSubmit(e) {
     e.preventDefault();
@@ -17,11 +18,14 @@ export default function LoginPage() {
       const { data } = await axios.post("/login", { email, pass });
       setUser(data);
       console.log(data);
-      alert("Login Successful");
       setRedirect(true);
     } catch (err) {
       console.log(err);
-      alert("Login Failed");
+      if (err.response.data === "Account does not exist") {
+        setErrorMessage(err.response.data);
+      } else {
+        setErrorMessage(err.response.data);
+      }
     }
   }
 
@@ -71,6 +75,23 @@ export default function LoginPage() {
             </Link>
           </div>
         </form>
+        {errorMessage && (
+          <div className="mt-4 font-bold text-center text-red-600">
+            {errorMessage === "Account does not exist" ? (
+              <>
+                {errorMessage}{" "}
+                <Link
+                  className="underline text-blue-500 hover:text-gray-500 "
+                  to="/register"
+                >
+                  Click here
+                </Link>
+              </>
+            ) : (
+              errorMessage
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
