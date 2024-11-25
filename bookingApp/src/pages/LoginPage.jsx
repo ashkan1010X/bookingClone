@@ -55,22 +55,30 @@ export default function LoginPage() {
               value={pass}
               onChange={(e) => setPass(e.target.value)}
               className="w-full pr-10"
+              required
             />
             <button
               type="button"
               onClick={togglePassVisibility}
               className="absolute right-3 top-1/2 bg-transparent transform -translate-y-1/2 text-lg"
+              title={passVisible ? "hide" : "show"}
             >
-              {passVisible ? <FaEye /> : <FaEyeSlash />}
+              {passVisible ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-          <button className="bg-gradient-to-r from-pink-500 to-pink-700 p-2 text-white rounded-3xl w-full hover:from-pink-700 hover:to-pink-800">
+          <button
+            title="show"
+            className="bg-gradient-to-r from-pink-500 to-pink-700 p-2 text-white rounded-3xl w-full hover:from-pink-700 hover:to-pink-800"
+          >
             Login
           </button>
-          <div className="flex justify-between py-2 text-gray-600 ">
+          <div className="flex justify-between py-2 text-gray-500 ">
             {" "}
             Dont have an account?
-            <Link className="underline font-bold" to={"/register"}>
+            <Link
+              className="underline font-bold  hover:text-gray-600"
+              to={"/register"}
+            >
               Sign Up Now!{" "}
             </Link>
           </div>
@@ -79,7 +87,7 @@ export default function LoginPage() {
           <div className="mt-4 font-bold text-center text-red-600">
             {errorMessage === "Account does not exist" ? (
               <>
-                {errorMessage}{" "}
+                {errorMessage} {""}
                 <Link
                   className="underline text-blue-500 hover:text-gray-500 "
                   to="/register"

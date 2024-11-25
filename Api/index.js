@@ -76,11 +76,11 @@ app.post('/login', async (req, res) => {
       })
 
     } else {
-      res.status(422).json('Incorrect password')
+      res.status(422).json('The password is incorrect. Please try again.')
     }
 
   } else {
-    res.status(404).json("No account found with this email address")
+    res.status(404).json("Account does not exist")
   }
 
 })
@@ -261,6 +261,14 @@ app.put('/places', async (req, res) => {
 app.get("/places", async (req, res) => {
   res.json(await Place.find())
 })
+
+app.delete("/user-places/:id", async (req, res) => {
+  const { id } = req.params;
+
+  await Place.findByIdAndDelete(id);
+  res.status(200).json("Place deleted successfully");
+
+});
 
 app.listen(5000)
 

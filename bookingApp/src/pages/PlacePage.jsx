@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 export default function PlacePage() {
   const { id } = useParams();
   const [place, setPlace] = useState();
-  console.log({ id });
+
   useEffect(() => {
     if (!id) {
       return;
@@ -35,7 +35,7 @@ export default function PlacePage() {
           {place.addedPhotos.length > 0 && (
             <div>
               <img
-                className="aspect-square object-cover  w-full"
+                className="aspect-square object-cover h-[900px] w-full"
                 src={`http://localhost:5000/uploads/${place.addedPhotos[0]}`}
                 alt=""
               />
@@ -45,7 +45,7 @@ export default function PlacePage() {
         <div className="grid">
           {place.addedPhotos.length > 0 && (
             <img
-              className="aspect-square object-cover   w-full"
+              className="aspect-square object-cover  h-[500px] w-full"
               src={`http://localhost:5000/uploads/${place.addedPhotos[1]}`}
               alt=""
             />
@@ -53,7 +53,7 @@ export default function PlacePage() {
           <div className="overflow-hidden">
             {place.addedPhotos.length > 0 && (
               <img
-                className="aspect-square object-cover relative top-2  w-full"
+                className="aspect-square object-cover relative top-2  h-[400px] w-full"
                 src={`http://localhost:5000/uploads/${place.addedPhotos[2]}`}
                 alt=""
               />

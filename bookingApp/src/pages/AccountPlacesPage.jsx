@@ -1,9 +1,10 @@
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AccountNav from "../AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { FaTrash, FaPen } from "react-icons/fa";
 
-export default function PlacesPage() {
+export default function AccountPlacesPage() {
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
@@ -12,6 +13,11 @@ export default function PlacesPage() {
       setPlaces(data);
     });
   }, []);
+
+  async function handleDelete(placeId) {
+    await axios.delete(`/user-places/${placeId}`);
+    setPlaces([...places.filter((place) => place._id !== placeId)]);
+  }
 
   return (
     <div className="px-3">
@@ -38,30 +44,53 @@ export default function PlacesPage() {
           </svg>
           Add New Places
         </Link>
-        <div className="mt-4">
+        <div className="mt-4 ">
           {places.length > 0 &&
             places.map((place, idx) => (
-              <Link
-                to={"/account/places/" + place._id}
-                className="flex cursor-pointer border bg-gray-100 p-2 rounded-2xl gap-2"
+              <div
                 key={idx}
+                className="relative flex border my-2 bg-gray-100 p-2 rounded-2xl gap-2"
               >
+                {/* Place Image */}
                 <div className="w-32 h-full bg-gray-300 grow-0 shrink-0">
                   {place.addedPhotos.length > 0 && (
                     <img
-                      className="w-full h-full"
+                      className="w-full h-full object-cover"
                       src={`http://localhost:5000/uploads/${place.addedPhotos[0]}`}
                       alt=""
                     />
-                  )}{" "}
+                  )}
                 </div>
+
+                {/* Place Details */}
                 <div className="grow-0 shrink-0">
-                  <h2 className="text-xl">{place.title} </h2>
-                  <p className="">{place.desc}</p>
+                  <h2 className="text-xl">{place.title}</h2>
+                  <p>{place.desc}</p>
                   <p>{place.perks}</p>
-                  <p>{place.checkIn.Date}</p>
+                  <p>{place.checkIn?.Date}</p> {/* Ensure checkIn is defined */}
                 </div>
-              </Link>
+
+                {/* Edit and Delete Buttons */}
+                <div className="absolute top-2 right-2 flex gap-2">
+                  {/* Edit Button */}
+                  <Link
+                    to={"/account/places/" + place._id}
+                    className="bg-blue-500 text-white p-1 rounded-lg hover:bg-blue-700 shadow-md"
+                    title="Edit"
+                  >
+                    <FaPen />
+                  </Link>
+
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDelete(place._id)}
+                    className="bg-gray-600 text-white p-1 rounded-lg hover:bg-red-700 shadow-md"
+                    title="Delete"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </div>
             ))}
         </div>
       </div>
