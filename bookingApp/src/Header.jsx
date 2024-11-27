@@ -12,7 +12,7 @@ export default function Header() {
       {/* Logo and Brand Name */}
       <Link
         to="/"
-        className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100"
+        className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100-pink-300 rounded-lg"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

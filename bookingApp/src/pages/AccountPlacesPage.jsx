@@ -44,18 +44,18 @@ export default function AccountPlacesPage() {
           </svg>
           Add New Places
         </Link>
-        <div className="mt-4 ">
+        <div className="mt-4">
           {places.length > 0 &&
             places.map((place, idx) => (
               <div
                 key={idx}
-                className="relative flex border my-2 bg-gray-100 p-2 rounded-2xl gap-2"
+                className="relative flex border my-2 p-2 bg-gray-200 rounded-2xl gap-2"
               >
                 {/* Place Image */}
-                <div className="w-32 h-full bg-gray-300 grow-0 shrink-0">
+                <div className="w-32 h-full grow-0 shrink-0">
                   {place.addedPhotos.length > 0 && (
                     <img
-                      className="w-full h-full object-cover"
+                      className="flex w-full h-full object-cover justify-center py-2.5"
                       src={`http://localhost:5000/uploads/${place.addedPhotos[0]}`}
                       alt=""
                     />
@@ -63,7 +63,7 @@ export default function AccountPlacesPage() {
                 </div>
 
                 {/* Place Details */}
-                <div className="grow-0 shrink-0">
+                <div className=" flex flex-col grow-0 shrink-0 w-full items-start">
                   <h2 className="text-xl">{place.title}</h2>
                   <p>{place.desc}</p>
                   <p>{place.perks}</p>

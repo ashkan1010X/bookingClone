@@ -21,12 +21,6 @@ export default function IndexPage() {
                   className="cursor-pointer rounded-2xl object-cover aspect-square"
                   src={`http://localhost:5000/uploads/` + place.addedPhotos[0]}
                   alt=""
-                  // onClick={() =>
-                  //   window.open(
-                  //     `http://localhost:5000/uploads/${place.addedPhotos[0]}`,
-                  //     "_blank"
-                  //   )
-                  // }
                 />
               </div>
             )}

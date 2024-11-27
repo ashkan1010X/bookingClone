@@ -21,6 +21,7 @@ export default function PlacesFormPage() {
   const [maxGuests, setMaxGuests] = useState("");
   const [price, setPrice] = useState("100");
   const [redirect, setRedirect] = useState(false);
+
   useEffect(() => {
     if (!id) {
       return;
