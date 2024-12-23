@@ -3,6 +3,7 @@ import AccountNav from "../AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash, FaPen } from "react-icons/fa";
+import PlaceImage from "../PlaceImage";
 
 export default function AccountPlacesPage() {
   const [places, setPlaces] = useState([]);
@@ -15,17 +16,22 @@ export default function AccountPlacesPage() {
   }, []);
 
   async function handleDelete(placeId) {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this place?"
+    );
+    if (!isConfirmed) return;
+
     await axios.delete(`/user-places/${placeId}`);
     setPlaces([...places.filter((place) => place._id !== placeId)]);
   }
 
   return (
-    <div className="px-3">
-      {console.log(places)} {/* Logs the places array on every render */}
+    <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+      {console.log(places)}
       <AccountNav />
       <div className="text-center">
         <Link
-          className="inline-flex gap-2 bg-gradient-to-r from-purple-600 to-purple-900 rounded-full py-2 px-5 text-white transition-transform duration-200 hover:scale-105 shadow-md"
+          className="inline-flex gap-3 bg-gradient-to-r from-purple-600 to-purple-900 rounded-full py-3 px-6 text-white shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
           to={"/account/places/new"}
         >
           <svg
@@ -44,30 +50,43 @@ export default function AccountPlacesPage() {
           </svg>
           Add New Places
         </Link>
+
+        {/* No Places Message */}
+        {places.length === 0 && (
+          <div className="mt-10 text-center">
+            <h2 className="text-xl font-semibold mb-4">
+              You haven’t added any places yet.
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Start sharing your unique spaces with guests from around the
+              world. Add your first place today and make it available for
+              bookings!
+            </p>
+          </div>
+        )}
+
         <div className="mt-4">
           {places.length > 0 &&
             places.map((place, idx) => (
               <div
                 key={idx}
-                className="relative flex border my-2 p-2 bg-gray-200 rounded-2xl gap-2"
+                className="relative flex gap-5 my-4 p-4 bg-white rounded-2xl border-2 border-transparent shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-200"
               >
                 {/* Place Image */}
-                <div className="w-32 h-full grow-0 shrink-0">
-                  {place.addedPhotos.length > 0 && (
-                    <img
-                      className="flex w-full h-full object-cover justify-center py-2.5"
-                      src={`http://localhost:5000/uploads/${place.addedPhotos[0]}`}
-                      alt=""
-                    />
-                  )}
+                <div className="w-48 grow-0 shrink-0">
+                  <PlaceImage place={place} />
                 </div>
 
                 {/* Place Details */}
-                <div className=" flex flex-col grow-0 shrink-0 w-full items-start">
-                  <h2 className="text-xl">{place.title}</h2>
-                  <p>{place.desc}</p>
-                  <p>{place.perks}</p>
-                  <p>{place.checkIn?.Date}</p> {/* Ensure checkIn is defined */}
+                <div className=" flex flex-col w-full items-start overflow-hidden">
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                    {place.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-1">{place.desc}</p>
+                  <p className="text-sm text-gray-700">{place.perks}</p>
+                  <p className="text-sm text-gray-700 mt-1">
+                    {place.checkIn?.Date}
+                  </p>{" "}
                 </div>
 
                 {/* Edit and Delete Buttons */}
@@ -75,7 +94,7 @@ export default function AccountPlacesPage() {
                   {/* Edit Button */}
                   <Link
                     to={"/account/places/" + place._id}
-                    className="bg-blue-500 text-white p-1 rounded-lg hover:bg-blue-700 shadow-md"
+                    className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 shadow-lg transition-all duration-200"
                     title="Edit"
                   >
                     <FaPen />
@@ -84,7 +103,7 @@ export default function AccountPlacesPage() {
                   {/* Delete Button */}
                   <button
                     onClick={() => handleDelete(place._id)}
-                    className="bg-gray-600 text-white p-1 rounded-lg hover:bg-red-700 shadow-md"
+                    className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700 shadow-lg transition-all duration-200"
                     title="Delete"
                   >
                     <FaTrash />

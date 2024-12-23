@@ -5,8 +5,11 @@ const mongoose = require("mongoose")
 const placeSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   title: String,
-  address: String,
-  addedPhotos: [String],
+  address: {
+    Province: String,
+    City: String,
+    Street: String
+  }, addedPhotos: [String],
   desc: String,
   perks: [String],
   additionalInfo: String,

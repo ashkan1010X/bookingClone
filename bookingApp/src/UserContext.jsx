@@ -9,6 +9,7 @@ export default function UserContextProvider({ children }) {
   useEffect(() => {
     if (!user) {
       axios.get("/profile").then(({ data }) => {
+        console.log(data);
         setUser(data); //data is a property of response
         setReady(true);
       });

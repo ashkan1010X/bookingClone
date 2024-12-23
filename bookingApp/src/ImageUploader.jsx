@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import ModalImage from "./ModalImage";
 
 export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
   const [photoLink, setPhotoLink] = useState("");
@@ -7,9 +8,15 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
 
   async function addPhoto(e) {
     e.preventDefault();
-    const { data } = await axios.post("/upload-link", { photoLink });
-    setAddedPhotos([...addedPhotos, data]);
-    setPhotoLink("");
+
+    try {
+      const { data } = await axios.post("/upload-link", { photoLink });
+      console.log("Uploaded photo name:", data);
+      setAddedPhotos([...addedPhotos, data]);
+      setPhotoLink("");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function uploadPhoto(e) {
@@ -65,7 +72,8 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
               <button
                 type="button"
                 onClick={() => deletePhoto(photo)}
-                className="absolute bottom-2 right-2 bg-opacity-0 rounded-2xl"
+                className="absolute bottom-2 right-2 bg-opacity-0 rounded-2xl transition-transform transform hover:scale-110 "
+                title="Delete"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -85,15 +93,16 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
               <button
                 type="button"
                 onClick={() => thumbnailPhoto(photo)}
-                className="absolute top-2 right-2 bg-white bg-opacity-5 rounded-2xl"
+                className="absolute top-2 right-2 bg-white bg-opacity-5 rounded-2xl transition duration-800"
+                title="Favorite"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill={photo === addedPhotos[0] ? "yellow" : "none"}
+                  fill={photo === addedPhotos[0] ? "#FFFF00" : "none"}
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="black"
-                  className="w-10 h-10 rounded-2xl "
+                  className="w-10 h-10 rounded-2xl hover:fill-[#FFFF00] transition duration-800 "
                 >
                   <path
                     strokeLinecap="round"
@@ -131,43 +140,10 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
       </div>
 
       {/* Modal for Selected Image */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative">
-            <img
-              className="max-w-full max-h-full rounded-xl"
-              src={selectedImage}
-              alt="Selected"
-            />
-
-            <button
-              className="absolute top-2 right-4 rounded-full py-2 px-3 bg-opacity-40 "
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedImage(null);
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={4}
-                stroke="black"
-                className="w-6 h-6 hover:stroke-white transition-all duration-200"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
+      <ModalImage
+        selectedImage={selectedImage}
+        setSelectedImage={setSelectedImage}
+      />
     </div>
   );
 }

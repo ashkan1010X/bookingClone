@@ -16,8 +16,8 @@ export default function Perks({ perks, setPerks }) {
     <div className="grid mt-2.5 gap-2.5 grid-cols-2 md:grid-cols-2 lg:grid-cols-6">
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
-          checked={perks.includes("parking")}
-          name="parking"
+          checked={perks.includes("Parking")}
+          name="Parking"
           type="checkbox"
           className="mr-2"
           onChange={(e) => handleCheck(e)}
@@ -29,8 +29,8 @@ export default function Perks({ perks, setPerks }) {
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
-          checked={perks.includes("Wifi")}
-          name="Wifi"
+          checked={perks.includes("Wi-Fi")}
+          name="Wi-Fi"
           type="checkbox"
           className="mr-2"
           onChange={(e) => handleCheck(e)}
@@ -42,8 +42,8 @@ export default function Perks({ perks, setPerks }) {
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
-          checked={perks.includes("tv")}
-          name="tv"
+          checked={perks.includes("Tv")}
+          name="Tv"
           type="checkbox"
           className="mr-2"
           onChange={(e) => handleCheck(e)}
@@ -55,8 +55,8 @@ export default function Perks({ perks, setPerks }) {
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
-          checked={perks.includes("pool")}
-          name="pool"
+          checked={perks.includes("Pool")}
+          name="Pool"
           type="checkbox"
           className="mr-2"
           onChange={(e) => handleCheck(e)}
@@ -68,8 +68,8 @@ export default function Perks({ perks, setPerks }) {
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
-          checked={perks.includes("pet")}
-          name="pet"
+          checked={perks.includes("Pets")}
+          name="Pets"
           type="checkbox"
           className="mr-2"
           onChange={(e) => handleCheck(e)}
@@ -81,8 +81,8 @@ export default function Perks({ perks, setPerks }) {
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
-          checked={perks.includes("fireplace")}
-          name="fireplace"
+          checked={perks.includes("Fireplace")}
+          name="Fireplace"
           type="checkbox"
           className="mr-2"
           onChange={(e) => handleCheck(e)}

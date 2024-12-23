@@ -4,14 +4,16 @@ import Perks from "../Perks";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CheckInNOut from "../CheckInNOut";
+import provinceToCities from "../provinceToCities"; // Import the province to cities mapping
 
 export default function PlacesFormPage() {
   const { id } = useParams();
-  // console.log({ id });
-
   const [title, setTitle] = useState("");
-  const [address, setAddress] = useState("");
-
+  const [address, setAddress] = useState({
+    Province: "",
+    City: "",
+    Street: "",
+  });
   const [desc, setDesc] = useState("");
   const [perks, setPerks] = useState([]);
   const [additionalInfo, setAdditionalInfo] = useState("");
@@ -22,13 +24,13 @@ export default function PlacesFormPage() {
   const [price, setPrice] = useState("100");
   const [redirect, setRedirect] = useState(false);
 
+  const [cities, setCities] = useState([]); // New state to manage cities
+
   useEffect(() => {
     if (!id) {
       return;
     }
-    axios.get("/places/" + id).then((res) => {
-      const { data } = res;
-      console.log(data);
+    axios.get("/places/" + id).then(({ data }) => {
       setTitle(data.title);
       setAddress(data.address);
       setDesc(data.desc);
@@ -42,10 +44,15 @@ export default function PlacesFormPage() {
     });
   }, [id]);
 
+  useEffect(() => {
+    if (address.Province) {
+      setCities(provinceToCities[address.Province] || []);
+    }
+  }, [address.Province]);
+
   async function savePlace(e) {
     e.preventDefault();
     if (id) {
-      console.log(id);
       await axios.put("/places", {
         id,
         title,
@@ -61,7 +68,6 @@ export default function PlacesFormPage() {
       });
       setRedirect(true);
     } else {
-      // creates a new pace
       await axios.post("/places", {
         title,
         address,
@@ -86,9 +92,6 @@ export default function PlacesFormPage() {
       <form onSubmit={savePlace}>
         {/*Title*/}
         <h2 className="text-2xl mt-3">Title</h2>
-        <p className="text-gray-500 text-sm">
-          Give your place a name that stands out!
-        </p>
         <input
           type="text"
           placeholder="e.g. Stylish Loft with a View"
@@ -96,18 +99,55 @@ export default function PlacesFormPage() {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        {/*Address*/}
-        <h2 className="text-2xl mt-3 text sm">Address</h2>
-        <input
-          type="text"
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
+        {/* Address */}
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Address</h2>
+          <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-4">
+            <select
+              value={address.Province}
+              onChange={(e) =>
+                setAddress({ Province: e.target.value, City: "", Street: "" })
+              }
+            >
+              <option value="" disabled>
+                Select Province
+              </option>
+              {Object.keys(provinceToCities).map((province) => (
+                <option key={province} value={province}>
+                  {province}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={address.City}
+              onChange={(e) => setAddress({ ...address, City: e.target.value })}
+              disabled={!address.Province}
+            >
+              <option value="" disabled>
+                Select City
+              </option>
+              {cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="text"
+              placeholder="Street"
+              value={address.Street}
+              onChange={(e) =>
+                setAddress({ ...address, Street: e.target.value })
+              }
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+        </div>
 
         {/*Photos*/}
-        <h2 className="text-2xl mt-3 text sm">Photos </h2>
-        <p className="text-gray-500 text-sm">More Images, More Interest! </p>
+        <h2 className="text-2xl mt-3">Photos</h2>
         <ImageUploader
           addedPhotos={addedPhotos}
           setAddedPhotos={setAddedPhotos}
@@ -115,33 +155,25 @@ export default function PlacesFormPage() {
 
         {/*Description*/}
         <h2 className="text-2xl mt-3">Description</h2>
-        <p className="text-gray-500">
-          Provide the exciting details of your place
-        </p>
         <textarea
           className="py-6"
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
         />
 
-        {/*Ameneties*/}
+        {/*Amenities*/}
         <h2 className="text-2xl mt-3">What’s Included in Your Stay</h2>
-        <p className="text-gray-500">
-          List the features your place would provide
-        </p>
         <Perks perks={perks} setPerks={setPerks} />
 
         {/*Additional Info*/}
         <h2 className="text-2xl mt-3">Additional Details</h2>
-        <p className="text-gray-500 text-sm">Essential Guidelines </p>
         <textarea
           value={additionalInfo}
           onChange={(e) => setAdditionalInfo(e.target.value)}
         />
+
+        {/*Booking Details*/}
         <h2 className="text-2xl mt-3">Booking Details</h2>
-        <p className="text-gray-500 mt-1">
-          Please provide the following information to complete your booking:
-        </p>
         <div className="grid gap-2 sm:grid-cols-3 md:grid-cols-4">
           <CheckInNOut
             checkIn={checkIn}
@@ -160,18 +192,20 @@ export default function PlacesFormPage() {
               onChange={(e) => setMaxGuests(e.target.value)}
             />
           </div>
+
           {/*Price*/}
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Price per night</h3>
             <input
               value={price}
               type="number"
-              placeholder="Enter number of guests"
+              placeholder="Enter price"
               className="mt-1 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
               onChange={(e) => setPrice(e.target.value)}
             />
           </div>
         </div>
+
         <button
           type="submit"
           className="mt-6 w-full bg-purple-500 hover:bg-purple-800 text-white font-semibold py-2 px-4 rounded-md"

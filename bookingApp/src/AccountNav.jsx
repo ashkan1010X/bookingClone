@@ -27,6 +27,7 @@ export default function AccountNav() {
   return (
     <div className="flex flex-col items-center mt-10">
       <nav className="flex gap-8 mb-8 bg-gradient-to-r from-purple-700 to-purple-900 p-4 rounded-full shadow-lg">
+        {/* AccountPage */}
         <Link className={headingSelector("profile")} to={"/account"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,13 +45,14 @@ export default function AccountNav() {
           </svg>
           My Profile
         </Link>
+        {/* AccountBookingsPage */}
         <Link className={headingSelector("bookings")} to={"/account/bookings"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="black"
+            stroke="currentColor"
             className="w-6 h-6"
           >
             <path
@@ -61,6 +63,7 @@ export default function AccountNav() {
           </svg>
           My Bookings
         </Link>
+        {/* AccountPlacesPage */}
         <Link className={headingSelector("places")} to={"/account/places"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"

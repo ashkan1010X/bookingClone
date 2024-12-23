@@ -5,6 +5,8 @@ const mongoose = require("mongoose")
 const bcrypt = require('bcryptjs')
 const User = require('./models/User.js')
 const Place = require('./models/Place.js')
+const Booking = require('./models/Booking.js')
+
 
 const jwt = require('jsonwebtoken')
 
@@ -86,6 +88,7 @@ app.post('/login', async (req, res) => {
 })
 
 
+
 app.get('/profile', (req, res) => {
   const { token } = req.cookies
   console.log(token)
@@ -114,19 +117,23 @@ app.post('/upload-link', async (req, res) => {
   const newName = "photo" + Date.now() + '.jpg';
 
   if (!photoLink) {
-    return (
-
-      res.status(400).json("Image Required")
-    )
+    return res.status(400).json("Image Required");
   }
 
-  await imageDownloader.image({
-    url: photoLink,
-    dest: __dirname + '/uploads/' + newName,
-  })
-  res.json(newName)
+  try {
+    await imageDownloader.image({
+      url: photoLink,
+      dest: __dirname + '/uploads/' + newName,
+    });
+    res.json(newName);
+  } catch (error) {
+    // console.log(error)
+    console.log(error.message)
 
-})
+    console.error("Error downloading image:", error.message);
+    res.status(500).json({ error: "Failed to download the image. Please check the link and try again." });
+  }
+});
 
 const imageMiddleware = multer({ dest: "uploads" })
 app.post('/uploads', imageMiddleware.array("image", 200), (req, res) => {
@@ -204,7 +211,7 @@ app.get('/places/:id', async (req, res) => {
   }
 
   try {
-    const place = await Place.findById(id);
+    const place = await Place.findById(id).populate('owner'); // Populate only the 'name' field of the owner
 
     if (!place) {
       return res.status(404).json("Place not found");
@@ -264,11 +271,81 @@ app.get("/places", async (req, res) => {
 
 app.delete("/user-places/:id", async (req, res) => {
   const { id } = req.params;
+  console.log(id)
 
   await Place.findByIdAndDelete(id);
   res.status(200).json("Place deleted successfully");
 
 });
+
+app.delete("/user-bookings/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+
+  await Booking.findByIdAndDelete(id);
+  res.status(200).json("Place deleted successfully");
+
+});
+
+app.post("/bookingPlace", async (req, res) => {
+  const { token } = req.cookies;
+  const { place, checkIn, checkOut, name, guests, mobile, price } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ error: "Authentication token is missing" });
+  }
+
+  jwt.verify(token, jwtSecret, {}, async (err, userTokenInfo) => {
+    if (err) {
+      return res.status(403).json({ error: "Invalid or expired token" });
+    }
+
+    try {
+      const bookingPlace = await Booking.create({
+        user: userTokenInfo.id,
+        place,
+        checkIn,
+        checkOut,
+        name,
+        guests,
+        mobile,
+        price,
+      });
+      res.status(201).json(bookingPlace);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create booking" });
+    }
+  });
+});
+
+app.get("/bookings", async (req, res) => {
+  const { token } = req.cookies;
+
+  if (!token) {
+    return res.status(401).json({ error: "Authentication token is missing" });
+  }
+
+  jwt.verify(token, jwtSecret, {}, async (err, userTokenInfo) => {
+    if (err) {
+      return res.status(403).json({ error: "Invalid or expired token" });
+    }
+
+    try {
+      const bookings = await Booking.find({ user: userTokenInfo.id })
+        .populate({
+          path: "place",
+          populate: { path: "owner" }
+        });
+
+      res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      res.status(500).json({ error: "Failed to fetch bookings" });
+    }
+  });
+});
+
+
 
 app.listen(5000)
 
