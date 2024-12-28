@@ -82,9 +82,26 @@ export default function AccountPlacesPage() {
                   <h2 className="text-2xl font-semibold text-gray-800 mb-2">
                     {place.title}
                   </h2>
-                  <p className="text-sm text-gray-600 mb-1">{place.desc}</p>
-                  <p className="text-sm text-gray-700">{place.perks}</p>
-                  <p className="text-sm text-gray-700 mt-1">
+                  <p className="text-sm text-left text-gray-600 mb-1">
+                    {place.desc}
+                  </p>
+                  {/* Perks */}
+                  <div>
+                    <p className="text-sm mt-2 text-left ">
+                      <span className="font-semibold text-gray-700 underline decoration-yellow-400 decoration-4 mr-2">
+                        Includes:
+                      </span>
+                      {place.perks.map((perk, idx) => (
+                        <span
+                          className="bg-red-200 text-black italic px-2 py-1 mr-2 rounded-lg shadow hover:bg-red-300 transition duration-200 ease-in-out"
+                          key={idx}
+                        >
+                          {perk}
+                        </span>
+                      ))}
+                    </p>
+                  </div>{" "}
+                  <p className="text-md font-semibold text-gray-700 mt-3">
                     {place.checkIn?.Date}
                   </p>{" "}
                 </div>

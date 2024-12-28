@@ -4,6 +4,7 @@ import axios from "axios";
 import PlacePhotos from "../PlacePhotos";
 import AddressLocation from "../AddressLocation";
 import DatesnNights from "../DatesnNights";
+import { format } from "date-fns";
 
 export default function BookingsPage() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="mt-4 bg-gradient-to-r from-purple-400 via-purple-500 to-pink-500 mx-8 px-8 py-6 rounded-xl shadow-lg">
+    <div className="mt-4 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 mx-8 px-8 py-6 rounded-xl shadow-lg">
       <h1 className="text-4xl text-white font-extrabold mb-6">
         {booking.place.title}
       </h1>
@@ -48,12 +49,12 @@ export default function BookingsPage() {
           <strong>Guests:</strong> {booking.guests} people
         </p>
         <p className="text-gray-700 mb-2">
-          <strong>Check-in:</strong> {booking.place.checkIn.Date} at{" "}
-          {booking.place.checkIn.Time}
+          <strong>Check-in:</strong>{" "}
+          {format(new Date(booking.checkIn), "yyyy-MM-dd")}
         </p>
         <p className="text-gray-700 mb-2">
-          <strong>Check-out:</strong> {booking.place.checkOut.Date} at{" "}
-          {booking.place.checkOut.Time}
+          <strong>Check-out:</strong>{" "}
+          {format(new Date(booking.checkOut), "yyyy-MM-dd")}
         </p>
         <p className="text-gray-700 mb-2">
           <strong>Total Price:</strong>{" "}

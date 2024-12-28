@@ -8,6 +8,7 @@ import provinceToCities from "../provinceToCities"; // Import the province to ci
 
 export default function PlacesFormPage() {
   const { id } = useParams();
+  console.log({ id });
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState({
     Province: "",
@@ -24,7 +25,7 @@ export default function PlacesFormPage() {
   const [price, setPrice] = useState("100");
   const [redirect, setRedirect] = useState(false);
 
-  const [cities, setCities] = useState([]); // New state to manage cities
+  const [cities, setCities] = useState([]);
 
   useEffect(() => {
     if (!id) {

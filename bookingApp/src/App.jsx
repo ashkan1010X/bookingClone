@@ -22,6 +22,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Public Routes */}
           <Route path="/" element={<IndexPage />} />
+          <Route path="/search" element={<IndexPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 

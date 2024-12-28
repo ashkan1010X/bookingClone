@@ -12,7 +12,9 @@ export default function RegisterPage() {
   async function registerUser(e) {
     e.preventDefault();
     try {
-      await axios.post("/register", { name, email, pass });
+      const processedEmail = email.toLowerCase();
+
+      await axios.post("/register", { name, email: processedEmail, pass });
       const firstName = name.split(" ")[0];
 
       setSuccessMessage(

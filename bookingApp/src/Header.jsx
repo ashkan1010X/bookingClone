@@ -1,18 +1,51 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import provinceToCities from "./provinceToCities";
 
 export default function Header() {
   const { user } = useContext(UserContext);
+  const [location, setLocation] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const navigate = useNavigate();
 
   const firstName = user?.name?.split(" ")[0];
+
+  // Combine all provinces and cities into a single searchable array
+  const searchableLocations = Object.entries(provinceToCities).flatMap(
+    ([province, cities]) => [province, ...cities]
+  );
+
+  // Filter suggestions based on user input
+  useEffect(() => {
+    if (location.trim()) {
+      const filteredSuggestions = searchableLocations.filter((loc) =>
+        loc.toLowerCase().startsWith(location.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
+  }, [location]);
+
+  const handleLocationSelect = (selectedLocation) => {
+    setLocation(selectedLocation);
+    setSuggestions([]); // Clear suggestions
+    navigate(`/search?location=${selectedLocation}`);
+  };
+
+  const handleLogo = () => {
+    navigate("/");
+    window.location.reload();
+  };
 
   return (
     <header className="flex border justify-between items-center px-5 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
       {/* Logo and Brand Name */}
       <Link
         to="/"
-        className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100-pink-300 rounded-lg"
+        className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
+        onClick={handleLogo}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -31,49 +64,25 @@ export default function Header() {
         <span className="font-extrabold text-3xl tracking-wide">BooknGo</span>
       </Link>
 
-      {/* Enhanced Search Bar */}
-      <div className="flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-2xl shadow-md">
-        <div className="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-opacity-20 transition-all duration-100 cursor-pointer text-white hover:text-yellow-300">
-          <span className="font-semibold transition duration-300">
-            Location
-          </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </div>
-        <div className="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-opacity-20 transition-all duration-100 cursor-pointer text-white hover:text-yellow-300">
-          <span className="font-semibold transition duration-300">Dates</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M8 7h8M8 13h4M21 10V4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6" />
-          </svg>
-        </div>
-        <div className="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-opacity-20 transition-all duration-100 cursor-pointer text-white hover:text-yellow-300">
-          <span className="font-semibold transition duration-300">Guests</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M20 14v2a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-2" />
-          </svg>
-        </div>
+      {/* Search Bar */}
+      <div className="relative flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-2xl shadow-md">
+        <input
+          type="text"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
+        />
+        <input
+          type="text"
+          placeholder="Dates"
+          className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
+        />
+        <input
+          type="number"
+          placeholder="Guests"
+          className="bg-transparent w-full max-w-[20%] px-4 py-2 text-white placeholder-white focus:outline-none"
+        />
         <button className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-500 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 ml-auto">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -90,6 +99,21 @@ export default function Header() {
             />
           </svg>
         </button>
+
+        {/* Suggestions Dropdown */}
+        {suggestions.length > 0 && (
+          <div className="absolute top-full mt-2 left-0 bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg max-w-[30%] w-full z-10">
+            {suggestions.map((suggestion, idx) => (
+              <div
+                key={`${suggestion}-${idx}`}
+                onClick={() => handleLocationSelect(suggestion)}
+                className="px-4 py-2 hover:bg-purple-200 cursor-pointer text-purple-700"
+              >
+                {suggestion}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* User Menu */}
@@ -110,21 +134,28 @@ export default function Header() {
         </svg>
         <Link
           to={user ? "/account" : "/login"}
-          className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full p-1 px-4 shadow-lg hover:scale-105 transition-all duration-300 hover:text-yellow-300"
+          className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full p-1 px-4 shadow-lg hover:scale-105 transition-all duration-100 hover:text-yellow-300"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-5 h-5"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="none"
+            className="size-6 transition-all duration-300"
           >
             <path
-              fillRule="evenodd"
-              d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-              clipRule="evenodd"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
             />
           </svg>
-          {!!user && <span className="font-semibold">{firstName}</span>}
+
+          {!!user && (
+            <span className="font-semibold transition-all duration-300">
+              {firstName}
+            </span>
+          )}
         </Link>
       </div>
     </header>

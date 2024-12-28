@@ -10,7 +10,7 @@ export default function AddressLocation({ place, className = null }) {
 
   return (
     <a
-      className={className}
+      className={`${className} w-fit p-3 rounded-lg bg-gradient-to-r from-purple-400 via-purple-600 to-purple-800 shadow-lg hover:shadow-purple-500/50 text-white transition-all duration-200`}
       target="_blank"
       rel="noopener noreferrer"
       href={"https://maps.google.com/?q=" + encodeURIComponent(fullAddress)}
