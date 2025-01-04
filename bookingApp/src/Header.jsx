@@ -27,11 +27,23 @@ export default function Header() {
     }
   }, [location]);
 
+  // Handle location selection with a delay to immediately clear the suggestions
   function handleLocationSelect(selectedLocation) {
-    const [city, province] = selectedLocation.split(", ");
-    setLocation("");
-    setSuggestions([]);
-    navigate(`/search?city=${city}&province=${province}`);
+    // Use a timeout to clear the suggestions after state updates
+    setLocation(selectedLocation); // Update location input
+    setTimeout(() => setSuggestions([]), 0); // Clear suggestions immediately
+  }
+
+  // Handle search button click
+  function handleSearch() {
+    if (location.trim()) {
+      const [city, province] = location.split(", ");
+      navigate(`/search?city=${city}&province=${province}`); // Navigate to search results
+    }
+  }
+
+  function handleLogoClick() {
+    setLocation(""); // Reset location input when logo is clicked
   }
 
   return (
@@ -40,6 +52,7 @@ export default function Header() {
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
+        onClick={handleLogoClick}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +90,10 @@ export default function Header() {
           placeholder="Guests"
           className="bg-transparent w-full max-w-[20%] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
-        <button className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-500 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 ml-auto">
+        <button
+          onClick={handleSearch}
+          className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-500 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 ml-auto"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -100,7 +116,7 @@ export default function Header() {
             {suggestions.map((suggestion) => (
               <div
                 key={suggestion}
-                onClick={() => handleLocationSelect(suggestion)}
+                onClick={() => handleLocationSelect(suggestion)} // Clear suggestions on click
                 className="px-4 py-2 hover:bg-purple-200 cursor-pointer text-purple-700"
               >
                 {suggestion}
