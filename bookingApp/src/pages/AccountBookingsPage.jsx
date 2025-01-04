@@ -44,7 +44,7 @@ export default function AccountBookingsPage() {
               <div className="flex-col w-full items-start overflow-hidden grow pr-3">
                 {/* Title*/}
                 <h2 className="text-2xl font-semibold text-gray-800 hover:text-indigo-600 transition-colors duration-300">
-                  {booking.place.title}
+                  {booking?.place?.title}
                 </h2>
 
                 {/* Date Range with Nights */}

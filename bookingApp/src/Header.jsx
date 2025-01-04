@@ -11,9 +11,8 @@ export default function Header() {
 
   const firstName = user?.name?.split(" ")[0];
 
-  // Combine all provinces and cities into a single searchable array
   const searchableLocations = Object.entries(provinceToCities).flatMap(
-    ([province, cities]) => [province, ...cities]
+    ([province, cities]) => cities.map((city) => `${city}, ${province}`)
   );
 
   // Filter suggestions based on user input
@@ -28,16 +27,12 @@ export default function Header() {
     }
   }, [location]);
 
-  const handleLocationSelect = (selectedLocation) => {
-    setLocation(selectedLocation);
-    setSuggestions([]); // Clear suggestions
-    navigate(`/search?location=${selectedLocation}`);
-  };
-
-  const handleLogo = () => {
-    navigate("/");
-    window.location.reload();
-  };
+  function handleLocationSelect(selectedLocation) {
+    const [city, province] = selectedLocation.split(", ");
+    setLocation("");
+    setSuggestions([]);
+    navigate(`/search?city=${city}&province=${province}`);
+  }
 
   return (
     <header className="flex border justify-between items-center px-5 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
@@ -45,7 +40,6 @@ export default function Header() {
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
-        onClick={handleLogo}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +59,7 @@ export default function Header() {
       </Link>
 
       {/* Search Bar */}
-      <div className="relative flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-2xl shadow-md">
+      <div className="relative gap-2 flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-2xl shadow-md">
         <input
           type="text"
           placeholder="Location"
@@ -103,9 +97,9 @@ export default function Header() {
         {/* Suggestions Dropdown */}
         {suggestions.length > 0 && (
           <div className="absolute top-full mt-2 left-0 bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg max-w-[30%] w-full z-10">
-            {suggestions.map((suggestion, idx) => (
+            {suggestions.map((suggestion) => (
               <div
-                key={`${suggestion}-${idx}`}
+                key={suggestion}
                 onClick={() => handleLocationSelect(suggestion)}
                 className="px-4 py-2 hover:bg-purple-200 cursor-pointer text-purple-700"
               >
@@ -134,28 +128,21 @@ export default function Header() {
         </svg>
         <Link
           to={user ? "/account" : "/login"}
-          className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full p-1 px-4 shadow-lg hover:scale-105 transition-all duration-100 hover:text-yellow-300"
+          className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full p-1 px-4 shadow-lg hover:scale-105 transition-all duration-300 hover:text-yellow-300"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
             viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="none"
-            className="size-6 transition-all duration-300"
+            fill="currentColor"
+            className="w-5 h-5"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+              fillRule="evenodd"
+              d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+              clipRule="evenodd"
             />
           </svg>
-
-          {!!user && (
-            <span className="font-semibold transition-all duration-300">
-              {firstName}
-            </span>
-          )}
+          {!!user && <span className="font-semibold">{firstName}</span>}
         </Link>
       </div>
     </header>

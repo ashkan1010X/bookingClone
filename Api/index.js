@@ -154,7 +154,7 @@ app.post('/uploads', imageMiddleware.array("image", 200), (req, res) => {
   }
 
   res.json(uploadFile)
-  // res.json(req.files)
+  // res.json(req.files) 
 
 })
 

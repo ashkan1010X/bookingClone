@@ -6,21 +6,25 @@ export default function IndexPage() {
   const [places, setPlaces] = useState([]);
   const location = useLocation(); // Get the query parameter
 
-  const locationQuery = new URLSearchParams(location.search).get("location");
+  const cityQuery = new URLSearchParams(location.search).get("city");
+  const provinceQuery = new URLSearchParams(location.search).get("province");
 
   useEffect(() => {
     axios.get("/places").then(({ data }) => {
-      const filteredPlaces = locationQuery
-        ? data.filter(
-            (place) =>
-              place.address.City.toLowerCase() === locationQuery.toLowerCase()
-          )
-        : data;
+      const filteredPlaces =
+        cityQuery && provinceQuery
+          ? data.filter(
+              (place) =>
+                place.address.City.toLowerCase() === cityQuery.toLowerCase() &&
+                place.address.Province.toLowerCase() ===
+                  provinceQuery.toLowerCase()
+            )
+          : data;
 
       setPlaces(filteredPlaces);
       console.log({ data });
     });
-  }, [locationQuery]); // Trigger re-fetch when location changes
+  }, [cityQuery, provinceQuery]);
 
   return (
     <div className=" px-3 py-5 grid gap-6 gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4  ">
@@ -28,7 +32,7 @@ export default function IndexPage() {
         places.map((place, idx) => (
           <Link
             to={"/place/" + place._id}
-            key={place._id} // Use _id for a unique key
+            key={place._id}
             className="hover:shadow-lg transition-all duration-200"
           >
             {place.addedPhotos.length > 0 && (
