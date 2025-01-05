@@ -8,12 +8,14 @@ export default function Header() {
   const locationHook = useLocation();
   const city = new URLSearchParams(locationHook.search).get("city");
   const province = new URLSearchParams(locationHook.search).get("province");
+  const dateQuery = new URLSearchParams(locationHook.search).get("date");
   const isValidCity = city && province;
   const initialLocation = isValidCity ? `${city}, ${province}` : "";
-
+  const validDate = dateQuery ? dateQuery : "";
+  console.log(validDate);
   const { user } = useContext(UserContext);
   const [location, setLocation] = useState(initialLocation);
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(validDate);
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false); // New state to track focus
   const navigate = useNavigate();
@@ -48,8 +50,9 @@ export default function Header() {
   function navigatePage() {
     let url = "/search?";
     const [city, province] = location.split(", ");
+
     console.log(location);
-    if (location) {
+    if (city) {
       url += `city=${city}`;
     }
 
@@ -69,6 +72,7 @@ export default function Header() {
 
   function handleLogoClick() {
     setLocation("");
+    setDate("");
   }
 
   return (
@@ -108,6 +112,7 @@ export default function Header() {
         <input
           type="text"
           placeholder="Dates"
+          value={date}
           onChange={(e) => handleDateInput(e.target.value)}
           className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
