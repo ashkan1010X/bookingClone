@@ -6,7 +6,6 @@ import provinceToCities from "./provinceToCities";
 
 export default function Header() {
   const locationHook = useLocation();
-  console.log(locationHook);
   const city = new URLSearchParams(locationHook.search).get("city");
   const province = new URLSearchParams(locationHook.search).get("province");
   const isValidCity = city && province;
@@ -40,14 +39,32 @@ export default function Header() {
     const [city, province] = selectedLocation.split(", ");
     setLocation(`${city}, ${province}`);
     setSuggestions([]);
-    navigate(`/search?city=${city}&province=${province}`);
   }
 
-  function handleSearch() {
-    if (location.trim()) {
-      const [city, province] = location.split(", ");
-      navigate(`/search?city=${city}&province=${province}`);
+  function handleDateInput(date) {
+    setDate(date);
+  }
+
+  function navigatePage() {
+    let url = "/search?";
+    const [city, province] = location.split(", ");
+    console.log(location);
+    if (location) {
+      url += `city=${city}`;
     }
+
+    if (province) {
+      url += `&province=${province}`;
+    }
+
+    if (date) {
+      url += `&date=${date}`;
+    }
+    console.log(url);
+    navigate(url);
+  }
+  function handleSearch() {
+    navigatePage();
   }
 
   function handleLogoClick() {
@@ -91,7 +108,7 @@ export default function Header() {
         <input
           type="text"
           placeholder="Dates"
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) => handleDateInput(e.target.value)}
           className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
         <input

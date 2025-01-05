@@ -8,10 +8,11 @@ export default function IndexPage() {
 
   const cityQuery = new URLSearchParams(location.search).get("city");
   const provinceQuery = new URLSearchParams(location.search).get("province");
-
+  const dateQuery = new URLSearchParams(location.search).get("date");
   const address = {
     Province: provinceQuery,
     City: cityQuery,
+    checkIn: dateQuery,
   };
 
   useEffect(() => {
