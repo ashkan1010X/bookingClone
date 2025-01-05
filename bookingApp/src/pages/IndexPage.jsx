@@ -9,20 +9,14 @@ export default function IndexPage() {
   const cityQuery = new URLSearchParams(location.search).get("city");
   const provinceQuery = new URLSearchParams(location.search).get("province");
 
-  useEffect(() => {
-    axios.get("/places").then(({ data }) => {
-      const filteredPlaces =
-        cityQuery && provinceQuery
-          ? data.filter(
-              (place) =>
-                place.address.City.toLowerCase() === cityQuery.toLowerCase() &&
-                place.address.Province.toLowerCase() ===
-                  provinceQuery.toLowerCase()
-            )
-          : data;
+  const address = {
+    Province: provinceQuery,
+    City: cityQuery,
+  };
 
-      setPlaces(filteredPlaces);
-      console.log({ data });
+  useEffect(() => {
+    axios.get("/places", { params: address }).then(({ data }) => {
+      setPlaces(data);
     });
   }, [cityQuery, provinceQuery]);
 

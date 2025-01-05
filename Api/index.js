@@ -266,8 +266,22 @@ app.put('/places', async (req, res) => {
 })
 
 app.get("/places", async (req, res) => {
-  res.json(await Place.find())
-})
+  console.log("query", req.query);
+
+  const { City, Province } = req.query;
+
+  // Build filter object based on query parameters
+  const filter = {};
+
+  if (City) filter["address.City"] = City;
+  if (Province) filter["address.Province"] = Province;
+
+  console.log('filter', filter)
+
+  const places = await Place.find(filter);
+
+  res.json(places);
+});
 
 app.delete("/user-places/:id", async (req, res) => {
   const { id } = req.params;

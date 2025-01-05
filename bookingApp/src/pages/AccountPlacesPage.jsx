@@ -4,14 +4,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash, FaPen } from "react-icons/fa";
 import PlaceImage from "../PlaceImage";
+import { ClipLoader } from "react-spinners";
 
 export default function AccountPlacesPage() {
   const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios.get("/user-places").then(({ data }) => {
       console.log({ data });
       setPlaces(data);
+      setLoading(false);
     });
   }, []);
 
@@ -25,9 +28,19 @@ export default function AccountPlacesPage() {
     setPlaces([...places.filter((place) => place._id !== placeId)]);
   }
 
+  if (loading) {
+    return (
+      <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+        <AccountNav />
+        <div className="flex justify-center items-center mt-6">
+          <ClipLoader color="#6B46C1" loading={true} size={50} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
-      {console.log(places)}
       <AccountNav />
       <div className="text-center">
         <Link

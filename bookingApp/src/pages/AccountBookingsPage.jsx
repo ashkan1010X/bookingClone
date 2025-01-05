@@ -1,18 +1,21 @@
 import AccountNav from "../AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { differenceInCalendarDays, format } from "date-fns";
 import { FaTrash } from "react-icons/fa";
 import PlaceImage from "../PlaceImage";
 import { Link } from "react-router-dom";
 import DatesnNights from "../DatesnNights";
+import { ClipLoader } from "react-spinners";
 
 export default function AccountBookingsPage() {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch bookings data
     axios.get("/bookings").then(({ data }) => {
       setBookings(data);
+      setLoading(false);
       console.log(data);
     });
   }, []);
@@ -25,6 +28,17 @@ export default function AccountBookingsPage() {
 
     await axios.delete(`/user-bookings/${bookingId}`);
     setBookings(bookings.filter((booking) => booking._id !== bookingId));
+  }
+
+  if (loading) {
+    return (
+      <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+        <AccountNav />
+        <div className="flex justify-center items-center mt-6">
+          <ClipLoader color="#6B46C1" loading={true} size={50} />
+        </div>
+      </div>
+    );
   }
 
   return (

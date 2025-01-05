@@ -7,6 +7,7 @@ import AddressLocation from "../AddressLocation.jsx";
 
 export default function PlacePage() {
   const { id } = useParams();
+  console.log("asdasdasw", id);
   const [place, setPlace] = useState();
 
   useEffect(() => {

@@ -1,12 +1,22 @@
+import { useLocation } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import provinceToCities from "./provinceToCities";
 
 export default function Header() {
+  const locationHook = useLocation();
+  console.log(locationHook);
+  const city = new URLSearchParams(locationHook.search).get("city");
+  const province = new URLSearchParams(locationHook.search).get("province");
+  const isValidCity = city && province;
+  const initialLocation = isValidCity ? `${city}, ${province}` : "";
+
   const { user } = useContext(UserContext);
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(initialLocation);
+  const [date, setDate] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [isFocused, setIsFocused] = useState(false); // New state to track focus
   const navigate = useNavigate();
 
   const firstName = user?.name?.split(" ")[0];
@@ -15,7 +25,6 @@ export default function Header() {
     ([province, cities]) => cities.map((city) => `${city}, ${province}`)
   );
 
-  // Filter suggestions based on user input
   useEffect(() => {
     if (location.trim()) {
       const filteredSuggestions = searchableLocations.filter((loc) =>
@@ -27,28 +36,26 @@ export default function Header() {
     }
   }, [location]);
 
-  // Handle location selection with a delay to immediately clear the suggestions
   function handleLocationSelect(selectedLocation) {
-    // Use a timeout to clear the suggestions after state updates
-    setLocation(selectedLocation); // Update location input
-    setTimeout(() => setSuggestions([]), 0); // Clear suggestions immediately
+    const [city, province] = selectedLocation.split(", ");
+    setLocation(`${city}, ${province}`);
+    setSuggestions([]);
+    navigate(`/search?city=${city}&province=${province}`);
   }
 
-  // Handle search button click
   function handleSearch() {
     if (location.trim()) {
       const [city, province] = location.split(", ");
-      navigate(`/search?city=${city}&province=${province}`); // Navigate to search results
+      navigate(`/search?city=${city}&province=${province}`);
     }
   }
 
   function handleLogoClick() {
-    setLocation(""); // Reset location input when logo is clicked
+    setLocation("");
   }
 
   return (
     <header className="flex border justify-between items-center px-5 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
-      {/* Logo and Brand Name */}
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
@@ -71,18 +78,20 @@ export default function Header() {
         <span className="font-extrabold text-3xl tracking-wide">BooknGo</span>
       </Link>
 
-      {/* Search Bar */}
       <div className="relative gap-2 flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-2xl shadow-md">
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+          onFocus={() => setIsFocused(true)} // Show suggestions when focused
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Hide after a slight delay
           className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
         <input
           type="text"
           placeholder="Dates"
+          onChange={(e) => setDate(e.target.value)}
           className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
         <input
@@ -110,13 +119,12 @@ export default function Header() {
           </svg>
         </button>
 
-        {/* Suggestions Dropdown */}
-        {suggestions.length > 0 && (
+        {isFocused && suggestions.length > 0 && (
           <div className="absolute top-full mt-2 left-0 bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg max-w-[30%] w-full z-10">
             {suggestions.map((suggestion) => (
               <div
                 key={suggestion}
-                onClick={() => handleLocationSelect(suggestion)} // Clear suggestions on click
+                onClick={() => handleLocationSelect(suggestion)}
                 className="px-4 py-2 hover:bg-purple-200 cursor-pointer text-purple-700"
               >
                 {suggestion}
@@ -126,7 +134,6 @@ export default function Header() {
         )}
       </div>
 
-      {/* User Menu */}
       <div className="flex ml-1 items-center gap-3 rounded-full py-2 px-5 bg-opacity-20 bg-white backdrop-blur-lg transition-all duration-100 hover:bg-opacity-30 shadow-md">
         <svg
           xmlns="http://www.w3.org/2000/svg"
