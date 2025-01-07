@@ -47,7 +47,7 @@ export default function BookingInfo({ place }) {
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-xl p-6 max-w-md mx-auto">
+    <div className="bg-gray-100 shadow-lg rounded-xl p-6 max-w-md mx-auto">
       <div className="text-2xl font-semibold text-center mb-4">
         Price: <span className="text-purple-600">${place.price}</span>/night
       </div>

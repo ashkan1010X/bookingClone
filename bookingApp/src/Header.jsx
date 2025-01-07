@@ -13,6 +13,7 @@ export default function Header() {
   const initialLocation = isValidCity ? `${city}, ${province}` : "";
   const validDate = dateQuery ? dateQuery : "";
   console.log(validDate);
+
   const { user } = useContext(UserContext);
   const [location, setLocation] = useState(initialLocation);
   const [date, setDate] = useState(validDate);
@@ -66,6 +67,7 @@ export default function Header() {
     console.log(url);
     navigate(url);
   }
+
   function handleSearch() {
     navigatePage();
   }
@@ -147,7 +149,7 @@ export default function Header() {
               <div
                 key={suggestion}
                 onClick={() => handleLocationSelect(suggestion)}
-                className="px-4 py-2 hover:bg-purple-200 cursor-pointer text-purple-700"
+                className="px-4 py-2 hover:bg-purple-200 hover:rounded-lg cursor-pointer text-purple-700 z-100"
               >
                 {suggestion}
               </div>
