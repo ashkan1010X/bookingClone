@@ -1,19 +1,33 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BookingInfo from "../BookingInfo";
 import PlacePhotos from "../PlacePhotos.jsx";
 import AddressLocation from "../AddressLocation.jsx";
+import { ClipLoader } from "react-spinners";
 
 export default function PlacePage() {
   const { id } = useParams();
   console.log("asdasdasw", id);
   const [place, setPlace] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
-    axios.get(`/places/` + id).then(({ data }) => setPlace(data));
+    setLoading(true);
+    axios.get(`/places/` + id).then(({ data }) => {
+      setPlace(data);
+      setLoading(false);
+    });
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-start pt-20 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+        <ClipLoader color="#6B46C1" loading={true} size={50} />
+      </div>
+    );
+  }
 
   if (!place) {
     return (

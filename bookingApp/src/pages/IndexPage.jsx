@@ -1,9 +1,12 @@
 import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
+
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
-  const location = useLocation(); // Get the query parameter
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   const cityQuery = new URLSearchParams(location.search).get("city");
   const provinceQuery = new URLSearchParams(location.search).get("province");
@@ -15,10 +18,20 @@ export default function IndexPage() {
   };
 
   useEffect(() => {
+    setLoading(true);
     axios.get("/places", { params: address }).then(({ data }) => {
       setPlaces(data);
+      setLoading(false);
     });
   }, [cityQuery, provinceQuery, dateQuery]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-start pt-20 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+        <ClipLoader color="#6B46C1" loading={true} size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="px-3 py-5 grid gap-6 gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
