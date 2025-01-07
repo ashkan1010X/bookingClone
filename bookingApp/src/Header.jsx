@@ -3,22 +3,30 @@ import { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import provinceToCities from "./provinceToCities";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 export default function Header() {
   const locationHook = useLocation();
   const city = new URLSearchParams(locationHook.search).get("city");
   const province = new URLSearchParams(locationHook.search).get("province");
-  const dateQuery = new URLSearchParams(locationHook.search).get("date");
+  const checkInQuery = new URLSearchParams(locationHook.search).get("checkIn");
+  const checkOutQuery = new URLSearchParams(locationHook.search).get(
+    "checkOut"
+  );
+
   const isValidCity = city && province;
   const initialLocation = isValidCity ? `${city}, ${province}` : "";
-  const validDate = dateQuery ? dateQuery : "";
-  console.log(validDate);
+  const validCheckIn = checkInQuery || "";
+  const validCheckOut = checkOutQuery || "";
 
   const { user } = useContext(UserContext);
   const [location, setLocation] = useState(initialLocation);
-  const [date, setDate] = useState(validDate);
+  const [checkIn, setCheckIn] = useState(validCheckIn);
+  const [checkOut, setCheckOut] = useState(validCheckOut);
   const [suggestions, setSuggestions] = useState([]);
-  const [isFocused, setIsFocused] = useState(false); // New state to track focus
+  const [isFocused, setIsFocused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const navigate = useNavigate();
 
   const firstName = user?.name?.split(" ")[0];
@@ -38,51 +46,77 @@ export default function Header() {
     }
   }, [location]);
 
+  // Correct useEffect for initializing flatpickr
+  useEffect(() => {
+    flatpickr("#checkInDate", {
+      dateFormat: "Y-m-d",
+      onChange: function (selectedDates) {
+        setCheckIn(
+          selectedDates[0] ? selectedDates[0].toISOString().split("T")[0] : ""
+        );
+      },
+    });
+
+    flatpickr("#checkOutDate", {
+      dateFormat: "Y-m-d",
+      onChange: function (selectedDates) {
+        setCheckOut(
+          selectedDates[0] ? selectedDates[0].toISOString().split("T")[0] : ""
+        );
+      },
+    });
+  }, []); // Only run once when the component mounts
+
   function handleLocationSelect(selectedLocation) {
     const [city, province] = selectedLocation.split(", ");
     setLocation(`${city}, ${province}`);
     setSuggestions([]);
   }
 
-  function handleDateInput(date) {
-    setDate(date);
-  }
-
-  function navigatePage() {
+  function handleNavigate() {
     let url = "/search?";
     const [city, province] = location.split(", ");
 
-    console.log(location);
-    if (city) {
-      url += `city=${city}`;
-    }
+    if (city) url += `city=${city}`;
+    if (province) url += `&province=${province}`;
+    if (checkIn) url += `&checkIn=${checkIn}`;
+    if (checkOut) url += `&checkOut=${checkOut}`;
 
-    if (province) {
-      url += `&province=${province}`;
-    }
-
-    if (date) {
-      url += `&date=${date}`;
-    }
-    console.log(url);
     navigate(url);
   }
 
   function handleSearch() {
-    navigatePage();
+    handleNavigate();
   }
 
-  function handleLogoClick() {
-    setLocation("");
-    setDate("");
-  }
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowDown") {
+      setSelectedIndex((prevIndex) =>
+        Math.min(suggestions.length - 1, prevIndex + 1)
+      );
+    } else if (e.key === "ArrowUp") {
+      setSelectedIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    } else if (e.key === "Enter") {
+      if (suggestions.length > 0 && selectedIndex >= 0) {
+        handleLocationSelect(suggestions[selectedIndex]);
+      } else if (location.trim() && suggestions.length === 0) {
+        handleSearch();
+      }
+    } else if (e.key === "Escape") {
+      setSuggestions([]);
+    }
+  };
 
   return (
     <header className="flex border justify-between items-center px-5 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
-        onClick={handleLogoClick}
+        onClick={() => {
+          setLocation("");
+          setCheckIn("");
+          setCheckOut("");
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -101,22 +135,26 @@ export default function Header() {
         <span className="font-extrabold text-3xl tracking-wide">BooknGo</span>
       </Link>
 
-      <div className="relative gap-2 flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-2xl shadow-md">
+      <div className="relative gap-2 flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-4xl shadow-md">
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          onFocus={() => setIsFocused(true)} // Show suggestions when focused
-          onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Hide after a slight delay
-          className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          className="bg-transparent w-full min-w-[300px] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
         <input
           type="text"
-          placeholder="Dates"
-          value={date}
-          onChange={(e) => handleDateInput(e.target.value)}
-          className="bg-transparent w-full max-w-[30%] px-4 py-2 text-white placeholder-white focus:outline-none"
+          className="flatpickr-checkin bg-transparent w-full min-w-[145px] px-4 py-2 text-white placeholder-white focus:outline-none"
+          placeholder="Select Check-In"
+        />
+        <input
+          type="text"
+          className="flatpickr-checkout bg-transparent w-full min-w-[150px] px-4 py-2 text-white placeholder-white focus:outline-none"
+          placeholder="Select Check-Out"
         />
         <input
           type="number"
@@ -145,11 +183,18 @@ export default function Header() {
 
         {isFocused && suggestions.length > 0 && (
           <div className="absolute top-full mt-2 left-0 bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg max-w-[30%] w-full z-10">
-            {suggestions.map((suggestion) => (
+            {suggestions.map((suggestion, index) => (
               <div
                 key={suggestion}
                 onClick={() => handleLocationSelect(suggestion)}
-                className="px-4 py-2 hover:bg-purple-200 hover:rounded-lg cursor-pointer text-purple-700 z-100"
+                onMouseEnter={() => setSelectedIndex(index)}
+                className={`px-4 py-2 cursor-pointer text-purple-700 z-50 rounded-lg 
+          ${index === selectedIndex ? "bg-purple-300" : ""} 
+          ${
+            index !== selectedIndex && index === selectedIndex
+              ? "bg-purple-200"
+              : ""
+          }`}
               >
                 {suggestion}
               </div>
@@ -189,7 +234,7 @@ export default function Header() {
               clipRule="evenodd"
             />
           </svg>
-          {!!user && <span className="font-semibold">{firstName}</span>}
+          <span className="font-medium">{firstName || "Login"}</span>
         </Link>
       </div>
     </header>

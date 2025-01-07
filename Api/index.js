@@ -268,7 +268,7 @@ app.put('/places', async (req, res) => {
 app.get("/places", async (req, res) => {
   console.log("query", req.query);
 
-  const { City, Province, checkIn } = req.query;
+  const { City, Province, checkIn, checkOut } = req.query;
 
   // Build filter object based on query parameters
   const filter = {};
@@ -276,6 +276,7 @@ app.get("/places", async (req, res) => {
   if (City) filter["address.City"] = City;
   if (Province) filter["address.Province"] = Province;
   if (checkIn) filter["checkIn.Date"] = checkIn;
+  if (checkOut) filter["checkOut.Date"] = checkOut;
 
   console.log('filter', filter)
 
