@@ -46,7 +46,6 @@ export default function Header() {
     }
   }, [location]);
 
-  // Correct useEffect for initializing flatpickr
   useEffect(() => {
     flatpickr("#checkInDate", {
       dateFormat: "Y-m-d",
@@ -65,7 +64,7 @@ export default function Header() {
         );
       },
     });
-  }, []); // Only run once when the component mounts
+  }, []);
 
   function handleLocationSelect(selectedLocation) {
     const [city, province] = selectedLocation.split(", ");
@@ -107,16 +106,31 @@ export default function Header() {
     }
   };
 
+  const handleResetFields = () => {
+    setLocation(""); // Reset location
+    setCheckIn(""); // Reset checkIn
+    setCheckOut(""); // Reset checkOut
+  };
+
+  // Added onChange handlers for location, checkIn, and checkOut
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value);
+  };
+
+  const handleCheckInChange = (e) => {
+    setCheckIn(e.target.value);
+  };
+
+  const handleCheckOutChange = (e) => {
+    setCheckOut(e.target.value);
+  };
+
   return (
     <header className="flex border justify-between items-center px-5 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
-        onClick={() => {
-          setLocation("");
-          setCheckIn("");
-          setCheckOut("");
-        }}
+        onClick={handleResetFields} // Reset fields on home button click
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -140,27 +154,29 @@ export default function Header() {
           type="text"
           placeholder="Location"
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={handleLocationChange} // Added onChange handler
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           className="bg-transparent w-full min-w-[300px] px-4 py-2 text-white placeholder-white focus:outline-none"
         />
         <input
+          id="checkInDate"
           type="text"
-          className="flatpickr-checkin bg-transparent w-full min-w-[145px] px-4 py-2 text-white placeholder-white focus:outline-none"
+          value={checkIn} // Binding the state value to the input
+          onChange={handleCheckInChange} // Added onChange handler
+          className="flatpickr-checkin bg-transparent w-full min-w-[120px] px-4 py-2 text-white placeholder-white focus:outline-none"
           placeholder="Select Check-In"
         />
         <input
+          id="checkOutDate"
           type="text"
-          className="flatpickr-checkout bg-transparent w-full min-w-[150px] px-4 py-2 text-white placeholder-white focus:outline-none"
+          value={checkOut} // Binding the state value to the input
+          onChange={handleCheckOutChange} // Added onChange handler
+          className="flatpickr-checkout bg-transparent w-full min-w-[120px] px-4 py-2 text-white placeholder-white focus:outline-none"
           placeholder="Select Check-Out"
         />
-        <input
-          type="number"
-          placeholder="Guests"
-          className="bg-transparent w-full max-w-[20%] px-4 py-2 text-white placeholder-white focus:outline-none"
-        />
+
         <button
           onClick={handleSearch}
           className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-500 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 ml-auto"
@@ -189,12 +205,7 @@ export default function Header() {
                 onClick={() => handleLocationSelect(suggestion)}
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={`px-4 py-2 cursor-pointer text-purple-700 z-50 rounded-lg 
-          ${index === selectedIndex ? "bg-purple-300" : ""} 
-          ${
-            index !== selectedIndex && index === selectedIndex
-              ? "bg-purple-200"
-              : ""
-          }`}
+          ${index === selectedIndex ? "bg-purple-300" : ""}`}
               >
                 {suggestion}
               </div>
@@ -204,20 +215,6 @@ export default function Header() {
       </div>
 
       <div className="flex ml-1 items-center gap-3 rounded-full py-2 px-5 bg-opacity-20 bg-white backdrop-blur-lg transition-all duration-100 hover:bg-opacity-30 shadow-md">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          className="w-6 h-6 text-white hover:text-pink-300 transition-all duration-300"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
         <Link
           to={user ? "/account" : "/login"}
           className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full p-1 px-4 shadow-lg hover:scale-105 transition-all duration-300 hover:text-yellow-300"

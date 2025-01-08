@@ -270,15 +270,18 @@ app.get("/places", async (req, res) => {
 
   const { City, Province, checkIn, checkOut } = req.query;
 
-  // Build filter object based on query parameters
   const filter = {};
 
   if (City) filter["address.City"] = City;
   if (Province) filter["address.Province"] = Province;
-  if (checkIn) filter["checkIn.Date"] = checkIn;
-  if (checkOut) filter["checkOut.Date"] = checkOut;
 
-  console.log('filter', filter)
+  // Filter based on check-in and check-out date range
+  if (checkIn && checkOut) {
+    filter["checkIn.Date"] = { $gte: checkIn }; // checkIn should be greater than or equal to the specified checkIn
+    filter["checkOut.Date"] = { $lte: checkOut }; // checkOut should be less than or equal to the specified checkOut
+  }
+
+  console.log("filter", filter);
 
   const places = await Place.find(filter);
 
@@ -364,4 +367,3 @@ app.get("/bookings", async (req, res) => {
 
 
 app.listen(5000)
-

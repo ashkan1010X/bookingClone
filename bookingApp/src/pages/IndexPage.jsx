@@ -67,6 +67,11 @@ export default function IndexPage() {
               <div className="mt-1">
                 <span className="font-bold">${place.price}/night</span>
               </div>
+              <div>
+                <p className="bg-red-100">
+                  {place.checkIn.Date} --{place.checkOut.Date}{" "}
+                </p>
+              </div>
             </Link>
           ))
         ) : (
