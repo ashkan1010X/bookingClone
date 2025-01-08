@@ -275,18 +275,34 @@ app.get("/places", async (req, res) => {
   if (City) filter["address.City"] = City;
   if (Province) filter["address.Province"] = Province;
 
-  // Filter based on check-in and check-out date range
+  let places = await Place.find(filter);
+
   if (checkIn && checkOut) {
-    filter["checkIn.Date"] = { $gte: checkIn }; // checkIn should be greater than or equal to the specified checkIn
-    filter["checkOut.Date"] = { $lte: checkOut }; // checkOut should be less than or equal to the specified checkOut
+    const userCheckInDate = new Date(checkIn);
+    const userCheckOutDate = new Date(checkOut);
+
+    places = places.filter((place) => {
+      const placeAvailableCheckInDate = new Date(place.checkIn.Date);
+      const placeAvailableCheckOutDate = new Date(place.checkOut.Date);
+
+      return (
+        userCheckInDate <= placeAvailableCheckOutDate &&
+        userCheckOutDate >= placeAvailableCheckInDate &&
+        userCheckInDate >= placeAvailableCheckInDate &&
+        userCheckOutDate <= placeAvailableCheckOutDate &&
+        userCheckOutDate <= placeAvailableCheckOutDate &&
+        userCheckInDate >= placeAvailableCheckInDate
+      );
+    });
   }
 
-  console.log("filter", filter);
-
-  const places = await Place.find(filter);
+  console.log("filtered places:", places);
 
   res.json(places);
 });
+
+
+
 
 app.delete("/user-places/:id", async (req, res) => {
   const { id } = req.params;

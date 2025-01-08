@@ -107,12 +107,11 @@ export default function Header() {
   };
 
   const handleResetFields = () => {
-    setLocation(""); // Reset location
-    setCheckIn(""); // Reset checkIn
-    setCheckOut(""); // Reset checkOut
+    setLocation("");
+    setCheckIn("");
+    setCheckOut("");
   };
 
-  // Added onChange handlers for location, checkIn, and checkOut
   const handleLocationChange = (e) => {
     setLocation(e.target.value);
   };
@@ -130,7 +129,7 @@ export default function Header() {
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
-        onClick={handleResetFields} // Reset fields on home button click
+        onClick={handleResetFields}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
