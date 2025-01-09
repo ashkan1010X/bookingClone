@@ -153,7 +153,7 @@ export default function Header() {
           type="text"
           placeholder="Location"
           value={location}
-          onChange={handleLocationChange} // Added onChange handler
+          onChange={handleLocationChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
@@ -162,16 +162,16 @@ export default function Header() {
         <input
           id="checkInDate"
           type="text"
-          value={checkIn} // Binding the state value to the input
-          onChange={handleCheckInChange} // Added onChange handler
+          value={checkIn}
+          onChange={handleCheckInChange}
           className="flatpickr-checkin bg-transparent w-full min-w-[120px] px-4 py-2 text-white placeholder-white focus:outline-none"
           placeholder="Select Check-In"
         />
         <input
           id="checkOutDate"
           type="text"
-          value={checkOut} // Binding the state value to the input
-          onChange={handleCheckOutChange} // Added onChange handler
+          value={checkOut}
+          onChange={handleCheckOutChange}
           className="flatpickr-checkout bg-transparent w-full min-w-[120px] px-4 py-2 text-white placeholder-white focus:outline-none"
           placeholder="Select Check-Out"
         />

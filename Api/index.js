@@ -139,7 +139,7 @@ const imageMiddleware = multer({ dest: "uploads" })
 app.post('/uploads', imageMiddleware.array("image", 200), (req, res) => {
   const uploadFile = []
   for (let i = 0; i < req.files.length; i++) {
-    console.log(req.files[i])
+    console.log(req.files)
     const { path, originalname } = req.files[i]
     console.log(path)
     const part = originalname.split(".")
