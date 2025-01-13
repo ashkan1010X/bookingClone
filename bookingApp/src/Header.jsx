@@ -149,16 +149,28 @@ export default function Header() {
       </Link>
 
       <div className="relative gap-2 flex items-center bg-white bg-opacity-15 backdrop-blur-lg rounded-full p-3 w-full max-w-4xl shadow-md">
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={handleLocationChange}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-          className="bg-transparent w-full min-w-[300px] px-4 py-2 text-white placeholder-white focus:outline-none"
-        />
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Location"
+            value={location}
+            onChange={handleLocationChange}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+            className="bg-transparent w-full min-w-[300px] px-4 py-2 text-white placeholder-white focus:outline-none"
+          />
+          {location && (
+            <button
+              onClick={() => setLocation("")}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-600 text-white px-1  rounded-full shadow-md hover:bg-black transition duration-200"
+              title="Clear"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
         <input
           id="checkInDate"
           type="text"
@@ -203,7 +215,7 @@ export default function Header() {
                 key={suggestion}
                 onClick={() => handleLocationSelect(suggestion)}
                 onMouseEnter={() => setSelectedIndex(index)}
-                className={`px-4 py-2 cursor-pointer text-purple-700 z-50 rounded-lg 
+                className={`px-4 py-2 cursor-pointer text-purple-700 z-100 rounded-lg 
           ${index === selectedIndex ? "bg-purple-300" : ""}`}
               >
                 {suggestion}
