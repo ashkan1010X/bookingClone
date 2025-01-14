@@ -73,7 +73,11 @@ app.post('/login', async (req, res) => {
       jwt.sign({ email: userInfo.email, id: userInfo._id }, jwtSecret, {}, (err, token) => {
         if (err) throw err
         //console.log(token)  token is the data in a connected string
-        res.cookie('token', token).json(userInfo)
+        res.cookie('token', token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none'
+        }).json(userInfo)
         console.log(token)
       })
 
@@ -109,7 +113,12 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.cookie('token', '').json(true)
+  res.cookie('token', '', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    expires: new Date(0)
+  }).json(true)
 })
 
 app.post('/upload-link', async (req, res) => {
