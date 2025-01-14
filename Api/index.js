@@ -36,7 +36,7 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: "https://bookingclone-front.onrender.com"
+  origin: "https://bookingclone-front.onrender.com" //connecting to frontend
 }))
 
 
