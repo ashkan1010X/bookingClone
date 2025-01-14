@@ -35,7 +35,7 @@ export default function PlacePhotos({ place }) {
               <div key={photo} className="flex justify-center">
                 <img
                   className="w-[1400px] rounded-3xl"
-                  src={`http://localhost:5000/uploads/${photo}`}
+                  src={`https://bookingclone-backend-5pei.onrender.com/uploads/${photo}`}
                   alt=""
                 />
               </div>
@@ -52,11 +52,11 @@ export default function PlacePhotos({ place }) {
           <div>
             <img
               className=" cursor-pointer aspect-square object-cover h-[900px] w-full"
-              src={`http://localhost:5000/uploads/${place.addedPhotos[0]}`}
+              src={`https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[0]}`}
               alt=""
               onClick={() =>
                 setSelectedImage(
-                  `http://localhost:5000/uploads/${place.addedPhotos[0]}`
+                  `https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[0]}`
                 )
               }
             />
@@ -67,11 +67,11 @@ export default function PlacePhotos({ place }) {
           {place.addedPhotos.length > 0 && (
             <img
               className="cursor-pointer placeholder:aspect-square object-cover  h-[500px] w-full"
-              src={`http://localhost:5000/uploads/${place.addedPhotos[1]}`}
+              src={`https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[1]}`}
               alt=""
               onClick={() =>
                 setSelectedImage(
-                  `http://localhost:5000/uploads/${place.addedPhotos[1]}`
+                  `https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[1]}`
                 )
               }
             />
@@ -80,11 +80,11 @@ export default function PlacePhotos({ place }) {
             {place.addedPhotos.length > 0 && (
               <img
                 className="cursor-pointer aspect-square object-cover relative top-2  h-[400px] w-full"
-                src={`http://localhost:5000/uploads/${place.addedPhotos[2]}`}
+                src={`https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[2]}`}
                 alt=""
                 onClick={() =>
                   setSelectedImage(
-                    `http://localhost:5000/uploads/${place.addedPhotos[2]}`
+                    `https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[2]}`
                   )
                 }
               />

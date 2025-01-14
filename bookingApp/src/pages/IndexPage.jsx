@@ -54,7 +54,8 @@ export default function IndexPage() {
                   <img
                     className="cursor-pointer rounded-xl object-cover aspect-square hover:shadow-lg transition-shadow duration-100"
                     src={
-                      `http://localhost:5000/uploads/` + place.addedPhotos[0]
+                      `https://bookingclone-backend-5pei.onrender.com/uploads/` +
+                      place.addedPhotos[0]
                     }
                     alt={place.title}
                   />

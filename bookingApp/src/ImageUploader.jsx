@@ -63,10 +63,12 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
             <div key={idx} className="relative h-auto">
               <img
                 className="cursor-pointer aspect-square h-full w-full object-cover rounded-3xl"
-                src={`http://localhost:5000/uploads/${photo}`}
+                src={`https://bookingclone-backend-5pei.onrender.com/uploads/${photo}`}
                 alt="error"
                 onClick={() =>
-                  setSelectedImage(`http://localhost:5000/uploads/${photo}`)
+                  setSelectedImage(
+                    `https://bookingclone-backend-5pei.onrender.com/uploads/${photo}`
+                  )
                 }
               />
               <button

@@ -12,7 +12,7 @@ import AccountPlacesPage from "./pages/AccountPlacesPage";
 import BookingsPage from "./pages/BookingsPage";
 import AccountBookingsPage from "./pages/AccountBookingsPage";
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "https://bookingclone-backend-5pei.onrender.com";
 axios.defaults.withCredentials = true;
 
 function App() {

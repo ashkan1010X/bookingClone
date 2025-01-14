@@ -7,7 +7,7 @@ export default function PlaceImage({ place, idx = 0, className = null }) {
     <div>
       <img
         className={className}
-        src={`http://localhost:5000/uploads/${place.addedPhotos[idx]}`}
+        src={`https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[idx]}`}
         alt=""
       />
     </div>
