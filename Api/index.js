@@ -15,7 +15,7 @@ const imageDownloader = require('image-downloader')
 
 const multer = require('multer')
 const fs = require("fs")
-const { userInfo } = require('os')
+
 
 require('dotenv').config()
 
@@ -36,7 +36,7 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: "https://bookingclone-front.onrender.com" //connecting to frontend
+  origin: "https://bookingclone-front.onrender.com"
 }))
 
 
