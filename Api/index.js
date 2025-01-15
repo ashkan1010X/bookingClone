@@ -89,7 +89,7 @@ app.post('/login', async (req, res) => {
         //console.log(token)  token is the data in a connected string
         res.cookie('token', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production", // set secure cookies only in production
+          secure: process.env.NODE_ENV === "production",
           sameSite: 'none'
         }).json(userInfo)
         console.log(token)
