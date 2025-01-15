@@ -11,14 +11,8 @@ import PlacePage from "./pages/PlacePage";
 import AccountPlacesPage from "./pages/AccountPlacesPage";
 import BookingsPage from "./pages/BookingsPage";
 import AccountBookingsPage from "./pages/AccountBookingsPage";
-import NotFound from "./NotFound";
 
-if (process.env.NODE_ENV === "development") {
-  axios.defaults.baseURL = "http://localhost:5000";
-} else {
-  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-}
-
+axios.defaults.baseURL = "https://bookingclone-backend-5pei.onrender.com";
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -43,9 +37,6 @@ function App() {
           {/* Place Details */}
           <Route path="/place/:id" element={<PlacePage />} />
         </Route>
-
-        {/* 404 Route */}
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </UserContextProvider>
   );
