@@ -11,6 +11,7 @@ import PlacePage from "./pages/PlacePage";
 import AccountPlacesPage from "./pages/AccountPlacesPage";
 import BookingsPage from "./pages/BookingsPage";
 import AccountBookingsPage from "./pages/AccountBookingsPage";
+import NotFound from "./NotFound";
 
 if (window.location.hostname === "localhost") {
   axios.defaults.baseURL = "http://localhost:5000";
@@ -41,6 +42,8 @@ function App() {
 
           {/* Place Details */}
           <Route path="/place/:id" element={<PlacePage />} />
+
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </UserContextProvider>
