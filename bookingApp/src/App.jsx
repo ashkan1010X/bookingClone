@@ -12,6 +12,7 @@ import AccountPlacesPage from "./pages/AccountPlacesPage";
 import BookingsPage from "./pages/BookingsPage";
 import AccountBookingsPage from "./pages/AccountBookingsPage";
 import NotFound from "./NotFound";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 if (window.location.hostname === "localhost") {
   axios.defaults.baseURL = "http://localhost:5000";
@@ -31,6 +32,9 @@ function App() {
           <Route path="/search" element={<IndexPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* Privacy Policy Route */}
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
           {/* Account Routes */}
           <Route path="/account" element={<AccountPage />} />

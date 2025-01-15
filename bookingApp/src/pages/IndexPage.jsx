@@ -2,6 +2,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import CookieBanner from "../CookieBanner";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
@@ -82,6 +83,7 @@ export default function IndexPage() {
           </div>
         )}
       </div>
+      <CookieBanner />
     </div>
   );
 }
