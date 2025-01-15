@@ -163,7 +163,7 @@ export default function Header() {
           {location && (
             <button
               onClick={() => setLocation("")}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-1 text-sm  rounded-full shadow-md hover:bg-black transition duration-200"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-purple-400 text-white px-1 text-sm  rounded-full shadow-md hover:bg-purple-900 transition duration-200"
               title="Clear"
             >
               ✕
