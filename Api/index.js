@@ -34,10 +34,13 @@ app.use("/uploads", express.static(__dirname + "/uploads"))
 
 app.use(cookieParser());
 
+
 app.use(cors({
   credentials: true,
-  origin: "https://bookingclone-front.onrender.com"
-}))
+  origin: ["http://localhost:5173", "https://bookingclone-front.onrender.com"]
+}));
+
+
 
 
 
