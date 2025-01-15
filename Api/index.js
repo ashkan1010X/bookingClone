@@ -34,10 +34,24 @@ app.use("/uploads", express.static(__dirname + "/uploads"))
 
 app.use(cookieParser());
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_DEV_URL,
+  'http://localhost:5173',
+];
+
 app.use(cors({
   credentials: true,
-  origin: "https://bookingclone-front.onrender.com"
-}))
+  origin: (origin, handleCorsOrigin) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      handleCorsOrigin(null, true);
+    } else {
+      handleCorsOrigin(new Error("Not allowed by CORS"));
+    }
+  }
+}));
+
+
 
 
 
@@ -75,7 +89,7 @@ app.post('/login', async (req, res) => {
         //console.log(token)  token is the data in a connected string
         res.cookie('token', token, {
           httpOnly: true,
-          secure: true,
+          secure: process.env.NODE_ENV === "production", // set secure cookies only in production
           sameSite: 'none'
         }).json(userInfo)
         console.log(token)
