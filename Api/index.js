@@ -40,10 +40,6 @@ app.use(cors({
   origin: ["http://localhost:5173", "https://bookingclone-front.onrender.com"]
 }));
 
-
-
-
-
 app.post('/register', async (req, res) => {
   const { name, email, pass } = req.body
 
