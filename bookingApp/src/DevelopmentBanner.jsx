@@ -19,6 +19,7 @@ export default function DevelopmentBanner() {
         <button
           onClick={closeBanner}
           className="absolute right-0 top-[-8px] text-2xl font-bold text-white bg-transparent border-0 cursor-pointer hover:text-black"
+          title="Close"
         >
           &times;
         </button>
