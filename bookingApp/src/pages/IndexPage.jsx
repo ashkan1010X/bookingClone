@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import CookieBanner from "../CookieBanner";
+import DevelopmentBanner from "../DevelopmentBanner";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
@@ -39,6 +40,9 @@ export default function IndexPage() {
 
   return (
     <div className="px-3 py-5">
+      {/* Development Banner */}
+      <DevelopmentBanner />
+
       <h1 className="text-center text-3xl font-bold text-gray-800 mb-8">
         Available Listings
       </h1>
