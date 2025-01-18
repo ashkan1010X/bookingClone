@@ -125,7 +125,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex border justify-between items-center px-5 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
+    <header className="flex  justify-between items-center px-4 py-4 bg-gradient-to-r from-purple-700 to-purple-900 text-white shadow-lg">
       <Link
         to="/"
         className="flex items-center gap-3 mr-2 text-white hover:text-pink-300 transition-all duration-100 rounded-lg"
