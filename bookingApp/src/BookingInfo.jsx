@@ -158,6 +158,13 @@ export default function BookingInfo({ place }) {
       </div>
 
       {/* Book Now Button */}
+
+      {!user && (
+        <div className="text-red-500 text-center mt-4">
+          Please log in to book this place.
+        </div>
+      )}
+
       <button
         className={`w-full mt-6 text-white font-medium py-3 rounded-lg transition duration-300 ${
           !checkIn || !checkOut || !guests || !name || !mobile
