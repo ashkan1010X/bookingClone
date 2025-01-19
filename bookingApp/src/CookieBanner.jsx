@@ -30,7 +30,7 @@ export default function CookieBanner() {
             Learn more
           </a>
         </p>
-        <div className="flex mr-4 items-center space-x-4">
+        <div className="flex mr-7 items-center space-x-4">
           <button
             onClick={acceptCookies}
             className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-1 px-4 rounded-full shadow-md hover:bg-gradient-to-r hover:from-pink-400 hover:to-purple-400 transition-all duration-300"
@@ -41,7 +41,7 @@ export default function CookieBanner() {
 
         <button
           onClick={closeBanner}
-          className="absolute top-[-25px] right-[-15px] text-3xl bg-transparent text-white hover:shadow-emerald-500"
+          className="absolute top-[-25px] right-[-15px] text-3xl bg-transparent text-white hover:text-gray-300"
           title="Close"
         >
           ×
