@@ -12,7 +12,6 @@ export default function AccountBookingsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch bookings data
     axios.get("/bookings").then(({ data }) => {
       setBookings(data);
       setLoading(false);
