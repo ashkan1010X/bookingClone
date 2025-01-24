@@ -70,7 +70,7 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
             return (
               <div className="relative" key={idx}>
                 <img
-                  className="aspect-square w-full object-cover rounded-xl"
+                  className="cursor-pointer aspect-square h-full w-full object-cover rounded-3xl"
                   src={`${baseURL}/${imagePath}`}
                   alt="Photo"
                   onClick={() =>
