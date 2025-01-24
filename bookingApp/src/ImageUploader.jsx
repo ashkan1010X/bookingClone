@@ -64,14 +64,14 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
       <div className="grid gap-3 grid-cols-3 mt-2 md:grid-cols-4 lg:grid-cols-6">
         {addedPhotos.length > 0 &&
           addedPhotos.map((photo, idx) => {
-            const imagePath = photo.startsWith("uploads/")
+            const photoURL = photo.startsWith("uploads/")
               ? photo
               : `uploads/${photo}`;
             return (
               <div className="relative" key={idx}>
                 <img
                   className="cursor-pointer aspect-square h-full w-full object-cover rounded-3xl"
-                  src={`${baseURL}/${imagePath}`}
+                  src={`${baseURL}/${photoURL}`}
                   alt="Photo"
                   onClick={() =>
                     setSelectedImage(
