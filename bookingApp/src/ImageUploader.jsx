@@ -8,7 +8,7 @@ export default function ImageUploader({ addedPhotos, setAddedPhotos }) {
 
   const baseURL =
     window.location.hostname === "localhost"
-      ? "http://localhost:5000/"
+      ? "http://localhost:5000"
       : "https://bookingclone-backend-5pei.onrender.com";
 
   async function addPhoto(e) {
