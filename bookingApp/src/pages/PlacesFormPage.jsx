@@ -4,7 +4,7 @@ import Perks from "../Perks";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CheckInNOut from "../CheckInNOut";
-import provinceToCities from "../provinceToCities"; // Import the province to cities mapping
+import provinceToCities from "../provinceToCities";
 
 export default function PlacesFormPage() {
   const { id } = useParams();
