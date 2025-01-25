@@ -10,6 +10,11 @@ export default function IndexPage() {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
+  const baseURL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://bookingclone-backend-5pei.onrender.com";
+
   const cityQuery = new URLSearchParams(location.search).get("city");
   const provinceQuery = new URLSearchParams(location.search).get("province");
   const checkInQuery = new URLSearchParams(location.search).get("checkIn");
@@ -56,14 +61,19 @@ export default function IndexPage() {
             >
               {place.addedPhotos.length > 0 && (
                 <div className="flex">
-                  <img
-                    className="cursor-pointer rounded-xl object-cover aspect-square hover:shadow-lg transition-shadow duration-100"
-                    src={
-                      `https://bookingclone-backend-5pei.onrender.com/uploads/` +
-                      place.addedPhotos[0]
-                    }
-                    alt={place.title}
-                  />
+                  {(() => {
+                    const thumbnailPhoto = place.addedPhotos[0];
+                    const photoURL = thumbnailPhoto.startsWith("uploads/")
+                      ? thumbnailPhoto
+                      : `uploads/${thumbnailPhoto}`;
+                    return (
+                      <img
+                        className="cursor-pointer rounded-xl object-cover aspect-square hover:shadow-lg transition-shadow duration-100"
+                        src={`${baseURL}/${photoURL}`}
+                        alt={place.title}
+                      />
+                    );
+                  })()}
                 </div>
               )}
               <h2 className="font-bold">
