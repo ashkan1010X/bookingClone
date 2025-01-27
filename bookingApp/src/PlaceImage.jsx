@@ -5,7 +5,7 @@ export default function PlaceImage({ place, idx = 0, className = null }) {
 
   const baseURL =
     window.location.hostname === "localhost"
-      ? "http://localhost:5000/"
+      ? "http://localhost:5000"
       : "https://bookingclone-backend-5pei.onrender.com/";
 
   const imagePath = place.addedPhotos[idx].startsWith("uploads/")
