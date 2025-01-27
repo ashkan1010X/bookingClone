@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function DevelopmentBanner() {
   const [isVisible, setIsVisible] = useState(true);
 
+  useEffect(() => {
+    const bannerClosed = localStorage.getItem("developmentBannerClosed");
+    if (bannerClosed) {
+      setIsVisible(false);
+    }
+  }, []);
+
   const closeBanner = () => {
     setIsVisible(false);
+    localStorage.setItem("developmentBannerClosed", "true");
   };
 
   return (
     isVisible && (
-      <div className="relative  bg-gradient-to-r from-yellow-400 to-yellow-500 text-black text-center py-2 px-4 mb-6 flex justify-between items-center  ">
+      <div className="relative z-10 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black text-center py-2 px-4 mb-6 flex justify-between items-center">
         <p className="flex-1">
           This is a development version of the Booking Platform. Features are
           being added and improved. Please note that cookies information

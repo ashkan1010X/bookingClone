@@ -209,14 +209,14 @@ export default function Header() {
         </button>
 
         {isFocused && suggestions.length > 0 && (
-          <div className="absolute top-full mt-2 left-0 bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg max-w-[30%] w-full z-10">
+          <div className="absolute top-full mt-2 left-0 bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg max-w-[30%] w-full z-20">
             {suggestions.map((suggestion, index) => (
               <div
                 key={suggestion}
                 onClick={() => handleLocationSelect(suggestion)}
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={`px-4 py-2 cursor-pointer text-purple-700 z-100 rounded-lg 
-          ${index === selectedIndex ? "bg-purple-300" : ""}`}
+        ${index === selectedIndex ? "bg-purple-300" : ""}`}
               >
                 {suggestion}
               </div>
