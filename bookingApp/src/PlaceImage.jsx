@@ -3,18 +3,13 @@ export default function PlaceImage({ place, idx = 0, className = null }) {
     className = "aspect-square object-cover rounded-lg";
   }
 
-  const baseURL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000/"
-      : "https://bookingclone-backend-5pei.onrender.com/";
-
-  const imagePath = place.addedPhotos[idx].startsWith("uploads/")
-    ? place.addedPhotos[idx]
-    : `uploads/${place.addedPhotos[idx]}`;
-
   return (
     <div>
-      <img className={className} src={`${baseURL}/${imagePath}`} alt="" />
+      <img
+        className={className}
+        src={`https://bookingclone-backend-5pei.onrender.com/uploads/${place.addedPhotos[idx]}`}
+        alt=""
+      />
     </div>
   );
 }
