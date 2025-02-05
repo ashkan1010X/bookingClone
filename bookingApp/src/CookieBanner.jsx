@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CookieBanner() {
-  const [showBanner, setShowBanner] = useState(() => {
-    return !localStorage.getItem("cookieConsent");
-  });
+  const [showBanner, setShowBanner] = useState(true);
+
+  useEffect(() => {
+    const bannerClosed = localStorage.getItem("cookieConsent");
+    if (bannerClosed) {
+      setShowBanner(false);
+    }
+  }, []);
 
   const acceptCookies = () => {
     localStorage.setItem("cookieConsent", "true");
@@ -12,6 +17,7 @@ export default function CookieBanner() {
 
   const closeBanner = () => {
     setShowBanner(false);
+    localStorage.setItem("cookieConsent", "true");
   };
 
   if (!showBanner) return null;
