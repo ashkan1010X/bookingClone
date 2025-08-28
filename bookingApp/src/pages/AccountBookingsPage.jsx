@@ -5,7 +5,7 @@ import { FaTrash } from "react-icons/fa";
 import PlaceImage from "../PlaceImage";
 import { Link } from "react-router-dom";
 import DatesnNights from "../DatesnNights";
-import { ClipLoader } from "react-spinners";
+import AccountBookingsSkeleton from "../components/skeletons/AccountBookingsSkeleton";
 
 export default function AccountBookingsPage() {
   const [bookings, setBookings] = useState([]);
@@ -31,11 +31,9 @@ export default function AccountBookingsPage() {
 
   if (loading) {
     return (
-      <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+      <div className="bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
         <AccountNav />
-        <div className="flex justify-center items-center mt-6">
-          <ClipLoader color="#6B46C1" loading={true} size={50} />
-        </div>
+        <AccountBookingsSkeleton />
       </div>
     );
   }

@@ -1,9 +1,9 @@
 import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ClipLoader } from "react-spinners";
 import CookieBanner from "../CookieBanner";
 import DevelopmentBanner from "../DevelopmentBanner";
+import IndexPageSkeleton from "../components/skeletons/IndexPageSkeleton";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
@@ -36,11 +36,7 @@ export default function IndexPage() {
   }, [cityQuery, provinceQuery, checkInQuery, checkOutQuery]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-start pt-20 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
-        <ClipLoader color="#6B46C1" loading={true} size={50} />
-      </div>
-    );
+    return <IndexPageSkeleton />;
   }
 
   return (

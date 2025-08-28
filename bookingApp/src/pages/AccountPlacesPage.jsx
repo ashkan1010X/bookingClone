@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash, FaPen } from "react-icons/fa";
 import PlaceImage from "../PlaceImage";
-import { ClipLoader } from "react-spinners";
+import AccountPlacesSkeleton from "../components/skeletons/AccountPlacesSkeleton";
 
 export default function AccountPlacesPage() {
   const [places, setPlaces] = useState([]);
@@ -30,17 +30,15 @@ export default function AccountPlacesPage() {
 
   if (loading) {
     return (
-      <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+      <div className="bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
         <AccountNav />
-        <div className="flex justify-center items-center mt-6">
-          <ClipLoader color="#6B46C1" loading={true} size={50} />
-        </div>
+        <AccountPlacesSkeleton />
       </div>
     );
   }
 
   return (
-    <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
+    <div className="mx-2 md:mx-8 py-4 md:py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
       <AccountNav />
       <div className="text-center">
         <Link
@@ -78,49 +76,75 @@ export default function AccountPlacesPage() {
           </div>
         )}
 
-        <div className="mt-4">
+        <div className="mt-4 space-y-4">
           {places.length > 0 &&
             places.map((place, idx) => (
               <div
                 key={idx}
-                className="relative flex gap-5 my-4 p-4 bg-white rounded-2xl border-2 border-transparent shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-200"
+                className="flex flex-col md:flex-row gap-3 md:gap-5 p-4 bg-white rounded-2xl border-2 border-transparent shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-200"
               >
                 {/* Place Image */}
-                <div className="w-48 grow-0 shrink-0">
+                <div className="w-full md:w-48 md:grow-0 md:shrink-0">
                   <PlaceImage place={place} />
                 </div>
 
                 {/* Place Details */}
-                <div className=" flex flex-col w-full items-start overflow-hidden">
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                    {place.title}
-                  </h2>
-                  <p className="text-sm text-left text-gray-600 mb-1">
+                <div className="flex flex-col w-full items-start">
+                  <div className="flex justify-between items-start w-full mb-2">
+                    <h2 className="text-lg md:text-2xl font-semibold text-gray-800 pr-2">
+                      {place.title}
+                    </h2>
+
+                    {/* Edit and Delete Buttons - Mobile positioned in header */}
+                    <div className="flex gap-2 md:hidden flex-shrink-0">
+                      {/* Edit Button */}
+                      <Link
+                        to={"/account/places/" + place._id}
+                        className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 shadow-lg transition-all duration-200"
+                        title="Edit"
+                      >
+                        <FaPen className="w-3 h-3" />
+                      </Link>
+
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => handleDelete(place._id)}
+                        className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700 shadow-lg transition-all duration-200"
+                        title="Delete"
+                      >
+                        <FaTrash className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <p className="text-xs md:text-sm text-left text-gray-600 mb-2 line-clamp-3">
                     {place.desc}
                   </p>
+
                   {/* Perks */}
-                  <div>
-                    <p className="text-sm mt-2 text-left ">
-                      <span className="font-semibold text-gray-700 underline decoration-yellow-400 decoration-4 mr-2">
+                  <div className="w-full">
+                    <p className="text-xs md:text-sm text-left flex flex-wrap gap-1">
+                      <span className="font-semibold text-gray-700 underline decoration-yellow-400 decoration-4 mr-1">
                         Includes:
                       </span>
                       {place.perks.map((perk, idx) => (
                         <span
-                          className="bg-red-200 text-black italic px-2 py-1 mr-2 rounded-lg shadow hover:bg-red-300 transition duration-200 ease-in-out"
+                          className="bg-red-200 text-black italic px-1.5 py-0.5 text-xs rounded-lg shadow hover:bg-red-300 transition duration-200 ease-in-out"
                           key={idx}
                         >
                           {perk}
                         </span>
                       ))}
                     </p>
-                  </div>{" "}
-                  <p className="text-md font-semibold text-gray-700 mt-3">
+                  </div>
+
+                  <p className="text-sm md:text-md font-semibold text-gray-700 mt-2">
                     {place.checkIn?.Date}
-                  </p>{" "}
+                  </p>
                 </div>
 
-                {/* Edit and Delete Buttons */}
-                <div className="absolute top-2 right-2 flex gap-2">
+                {/* Edit and Delete Buttons - Desktop positioned on the right */}
+                <div className="hidden md:flex gap-2 flex-col self-start">
                   {/* Edit Button */}
                   <Link
                     to={"/account/places/" + place._id}

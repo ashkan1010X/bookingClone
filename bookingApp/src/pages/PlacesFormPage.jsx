@@ -179,6 +179,7 @@ export default function PlacesFormPage() {
           <CheckInNOut
             checkIn={checkIn}
             setCheckIn={setCheckIn}
+            select
             checkOut={checkOut}
             setCheckOut={setCheckOut}
           />
