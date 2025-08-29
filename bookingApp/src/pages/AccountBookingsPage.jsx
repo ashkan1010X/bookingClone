@@ -29,20 +29,14 @@ export default function AccountBookingsPage() {
     setBookings(bookings.filter((booking) => booking._id !== bookingId));
   }
 
-  if (loading) {
-    return (
-      <div className="bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
-        <AccountNav />
-        <AccountBookingsSkeleton />
-      </div>
-    );
-  }
-
   return (
     <div className="px-5 py-8 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 min-h-screen">
       <AccountNav />
       <div className="px-4">
-        {bookings?.length > 0 ? (
+        {/* Content skeleton while loading */}
+        {loading ? (
+          <AccountBookingsSkeleton />
+        ) : bookings?.length > 0 ? (
           bookings.map((booking, idx) => (
             <Link
               to={`/account/bookings/${booking._id}`}
@@ -57,10 +51,8 @@ export default function AccountBookingsPage() {
                 <h2 className="text-2xl font-semibold text-gray-800 hover:text-indigo-600 transition-colors duration-300">
                   {booking?.place?.title}
                 </h2>
-
                 {/* Date Range with Nights */}
                 <DatesnNights booking={booking} />
-
                 {/* Total Price */}
                 <div className="mt-3 text-gray-700">
                   <p className="text-lg">
@@ -70,7 +62,6 @@ export default function AccountBookingsPage() {
                   </p>
                 </div>
               </div>
-
               {/* Delete Button */}
               <div className="absolute top-3 right-5">
                 <button
