@@ -52,7 +52,7 @@ export default function AccountBookingsPage() {
                 {/* Title row with inline delete for mobile */}
                 <div className="flex items-start gap-3 mt-2 sm:mt-3">
                   <h2 className="flex-1 text-xl sm:text-2xl font-semibold text-gray-800 leading-snug line-clamp-2 hover:text-indigo-600 transition-colors duration-300">
-                    {booking?.place?.title}
+                    {booking?.place?.title || "Place unavailable"}
                   </h2>
                   <button
                     onClick={(e) => {

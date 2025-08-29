@@ -31,14 +31,16 @@ export default function BookingsPage() {
     );
   }
 
+  const place = booking.place; // may be null
+
   return (
     <div className="mt-4 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 mx-2 md:mx-8 px-4 md:px-8 py-6 rounded-xl shadow-lg">
       <h1 className="text-2xl md:text-4xl text-white font-extrabold mb-6">
-        {booking.place.title}
+        {place?.title || "Place unavailable"}
       </h1>
 
       {/* Address and Location */}
-      <AddressLocation place={booking.place} />
+      {place && <AddressLocation place={place} />}
 
       {/* Booking Summary */}
       <div className="bg-white p-4 md:p-6 mb-6 rounded-3xl shadow-xl">
@@ -69,15 +71,17 @@ export default function BookingsPage() {
         </h2>
         <p className="text-gray-700 mb-2 text-sm md:text-base">
           <strong>Host Name:</strong>{" "}
-          {booking?.place.owner.name || "Host not available"}
+          {place?.owner?.name || "Host not available"}
         </p>
         <p className="text-gray-700 mb-2 text-sm md:text-base">
           <strong>Contact Email:</strong>{" "}
           <a
-            href={`mailto:${booking?.place.owner.email}`}
+            href={
+              place?.owner?.email ? `mailto:${place.owner.email}` : undefined
+            }
             className="text-blue-500 hover:underline break-all"
           >
-            {booking?.place.owner.email}
+            {place?.owner?.email || "Email not available"}
           </a>
         </p>
       </div>
@@ -113,11 +117,12 @@ export default function BookingsPage() {
           Place Amenities:
         </h3>
         <ul className="list-disc pl-5">
-          {booking.place.perks.map((perk, index) => (
-            <li key={index} className="text-gray-700 text-sm md:text-base">
-              {perk}
-            </li>
-          ))}
+          {Array.isArray(place?.perks) &&
+            place.perks.map((perk, index) => (
+              <li key={index} className="text-gray-700 text-sm md:text-base">
+                {perk}
+              </li>
+            ))}
         </ul>
       </div>
 
@@ -126,7 +131,7 @@ export default function BookingsPage() {
         <h3 className="text-xl md:text-3xl font-semibold text-black mb-3">
           Gallery of Your Stay{" "}
         </h3>
-        <PlacePhotos place={booking.place} />
+        {place && <PlacePhotos place={place} />}
       </div>
     </div>
   );
