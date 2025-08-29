@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import ModalImage from "./ModalImage";
 
+// Displays photos for a place.
+// Desktop (>=640px): original wide grid layout preserved.
+// Mobile (<640px): vertical stack of up to 3 images + button to view full gallery if more.
 export default function PlacePhotos({ place }) {
   const [showMorePhotos, setShowMorePhotos] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -57,8 +60,9 @@ export default function PlacePhotos({ place }) {
 
   return (
     <div className="relative">
-      <div className="grid gap-2 grid-cols-[2fr_1fr] rounded-3xl overflow-hidden">
-        {place.addedPhotos.length > 0 && (
+      {/* Desktop / tablet original layout */}
+      <div className="hidden sm:grid gap-2 grid-cols-[2fr_1fr] rounded-3xl overflow-hidden">
+        {place.addedPhotos?.length > 0 && (
           <div>
             {(() => {
               const photoURL = place.addedPhotos[0].startsWith("uploads/")
@@ -68,16 +72,15 @@ export default function PlacePhotos({ place }) {
                 <img
                   className="cursor-pointer aspect-square object-cover h-[900px] w-full"
                   src={`${baseURL}/${photoURL}`}
-                  alt=""
+                  alt={`${place.title} photo 1`}
                   onClick={() => setSelectedImage(`${baseURL}/${photoURL}`)}
                 />
               );
             })()}
           </div>
         )}
-
         <div className="grid">
-          {place.addedPhotos.length > 1 &&
+          {place.addedPhotos?.length > 1 &&
             (() => {
               const photoURL = place.addedPhotos[1].startsWith("uploads/")
                 ? place.addedPhotos[1]
@@ -86,13 +89,13 @@ export default function PlacePhotos({ place }) {
                 <img
                   className="cursor-pointer aspect-square object-cover h-[500px] w-full"
                   src={`${baseURL}/${photoURL}`}
-                  alt=""
+                  alt={`${place.title} photo 2`}
                   onClick={() => setSelectedImage(`${baseURL}/${photoURL}`)}
                 />
               );
             })()}
           <div className="overflow-hidden">
-            {place.addedPhotos.length > 2 &&
+            {place.addedPhotos?.length > 2 &&
               (() => {
                 const photoURL = place.addedPhotos[2].startsWith("uploads/")
                   ? place.addedPhotos[2]
@@ -101,7 +104,7 @@ export default function PlacePhotos({ place }) {
                   <img
                     className="cursor-pointer aspect-square object-cover relative top-2 h-[400px] w-full"
                     src={`${baseURL}/${photoURL}`}
-                    alt=""
+                    alt={`${place.title} photo 3`}
                     onClick={() => setSelectedImage(`${baseURL}/${photoURL}`)}
                   />
                 );
@@ -109,26 +112,57 @@ export default function PlacePhotos({ place }) {
           </div>
         </div>
       </div>
-      <button
-        onClick={() => setShowMorePhotos(true)}
-        className="flex gap-1 absolute bottom-2 right-2 py-1 px-3 bg-gradient-to-r from-purple-400 to bg-red-500 rounded-3xl hover:bg-purple-400"
+
+      {/* Mobile vertical stack (<= 3) */}
+      <div
+        className="sm:hidden flex flex-col gap-3"
+        data-testid="mobile-photo-stack"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6"
+        {place.addedPhotos?.slice(0, 3).map((p, idx) => {
+          const photoURL = p.startsWith("uploads/") ? p : `uploads/${p}`;
+          return (
+            <img
+              key={p}
+              src={`${baseURL}/${photoURL}`}
+              alt={`${place.title} photo ${idx + 1}`}
+              className="w-full h-56 object-cover rounded-2xl shadow cursor-pointer"
+              onClick={() => setSelectedImage(`${baseURL}/${photoURL}`)}
+            />
+          );
+        })}
+        {place.addedPhotos?.length > 3 && (
+          <button
+            onClick={() => setShowMorePhotos(true)}
+            className="self-center mt-1 px-5 py-2 text-sm font-medium tracking-wide bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full shadow hover:shadow-lg active:scale-[.97] transition"
+          >
+            View All Photos ({place.addedPhotos.length})
+          </button>
+        )}
+      </div>
+
+      {/* Desktop floating button (unchanged appearance, hidden on mobile) */}
+      {place.addedPhotos?.length > 0 && (
+        <button
+          onClick={() => setShowMorePhotos(true)}
+          className="hidden sm:flex gap-1 absolute bottom-2 right-2 py-1 px-3 bg-gradient-to-r from-purple-400 to-red-500 rounded-3xl hover:brightness-110 text-white text-sm"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-          />
-        </svg>
-        More Photos
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+            />
+          </svg>
+          More Photos
+        </button>
+      )}
 
       {/* Modal for Selected Image */}
       <ModalImage

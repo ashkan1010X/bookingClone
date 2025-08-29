@@ -48,57 +48,119 @@ export default function Header() {
   }, [location]);
 
   useEffect(() => {
-    // Desktop flatpickr
-    const commonOptions = (setter, placeholderText) => ({
+    const INIT_FIELDS = [
+      { id: "checkInDate", setter: setCheckIn, placeholder: "Check In" },
+      { id: "checkOutDate", setter: setCheckOut, placeholder: "Check Out" },
+      { id: "checkInDateMobile", setter: setCheckIn, placeholder: "Check In" },
+      {
+        id: "checkOutDateMobile",
+        setter: setCheckOut,
+        placeholder: "Check Out",
+      },
+    ];
+
+    // Inject high z-index for calendar (once) so it's not hidden behind layout layers
+    if (!document.getElementById("fp-zfix")) {
+      const style = document.createElement("style");
+      style.id = "fp-zfix";
+      style.textContent =
+        ".flatpickr-calendar{z-index:9999 !important;} .flatpickr-calendar.inline{z-index:9999 !important;}";
+      document.head.appendChild(style);
+    }
+
+    const baseOptions = (setter, text) => ({
       dateFormat: "Y-m-d",
-      defaultDate: null,
       allowInput: true,
-      onChange: function (selectedDates, dateStr, instance) {
-        setter(
-          selectedDates[0] ? selectedDates[0].toISOString().split("T")[0] : ""
-        );
-        if (!selectedDates.length) {
-          instance.input.placeholder = placeholderText;
-        }
+      defaultDate: null,
+      clickOpens: true,
+      onReady: (_s, _d, inst) => {
+        if (!inst.input.value) inst.input.placeholder = text;
       },
-      onReady: function (_selectedDates, dateStr, instance) {
-        // Ensure no default value & custom placeholder visible
-        if (!dateStr) {
-          instance.clear();
-          instance.input.placeholder = placeholderText;
-        }
+      onOpen: (_s, _d, inst) => {
+        // keep placeholder visible while empty
+        if (!inst.input.value) inst.input.placeholder = text;
       },
-      onValueUpdate: function (_selectedDates, dateStr, instance) {
-        if (!dateStr) {
-          instance.input.placeholder = placeholderText;
-        }
+      onClose: (_s, _d, inst) => {
+        if (!inst.input.value) inst.input.placeholder = text;
+      },
+      onValueUpdate: (_s, _d, inst) => {
+        if (!inst.input.value) inst.input.placeholder = text;
+      },
+      onChange: (dates, _d, inst) => {
+        setter(dates[0] ? dates[0].toISOString().split("T")[0] : "");
+        if (!dates.length) inst.input.placeholder = text;
       },
     });
 
-    flatpickr("#checkInDate", commonOptions(setCheckIn, "Check In"));
-    flatpickr("#checkOutDate", commonOptions(setCheckOut, "Check Out"));
+    const listeners = [];
 
-    // Mobile flatpickr instances (use same explicit placeholders)
-    flatpickr("#checkInDateMobile", commonOptions(setCheckIn, "Check In"));
-    flatpickr("#checkOutDateMobile", commonOptions(setCheckOut, "Check Out"));
-
-    // Explicitly enforce placeholders in case flatpickr or the browser overrides with yyyy-mm-dd
-    const enforcePlaceholder = (id, text) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const apply = () => {
-        if (!el.value) el.setAttribute("placeholder", text);
+    function attachPlaceholderHandlers(el, text) {
+      const ensure = () => {
+        if (!el.value) el.placeholder = text;
       };
-      apply();
-      ["change", "input", "blur"].forEach((evt) =>
-        el.addEventListener(evt, apply)
-      );
-    };
+      ["focus", "blur", "input", "change"].forEach((evt) => {
+        const handler = () => ensure();
+        el.addEventListener(evt, handler);
+        listeners.push({ el, evt, handler });
+      });
+      // aggressive short window reassertion (covers flatpickr async overwrite)
+      const start = Date.now();
+      const interval = setInterval(() => {
+        ensure();
+        if (Date.now() - start > 400) clearInterval(interval);
+      }, 60);
+    }
 
-    enforcePlaceholder("checkInDate", "Check In");
-    enforcePlaceholder("checkOutDate", "Check Out");
-    enforcePlaceholder("checkInDateMobile", "Check In");
-    enforcePlaceholder("checkOutDateMobile", "Check Out");
+    const observers = [];
+
+    INIT_FIELDS.forEach(({ id, setter, placeholder }) => {
+      const el = document.getElementById(id);
+      if (el) {
+        const fp = flatpickr(el, baseOptions(setter, placeholder));
+        if (!el.value) el.placeholder = placeholder; // immediate
+        attachPlaceholderHandlers(el, placeholder);
+        // Force open on click (sometimes suppressed by styling wrappers)
+        const clickHandler = () => {
+          fp.open();
+        };
+        el.addEventListener("click", clickHandler);
+        listeners.push({ el, evt: "click", handler: clickHandler });
+
+        // MutationObserver to stop flatpickr from reverting placeholder to date format
+        const observer = new MutationObserver(() => {
+          if (!el.value && el.placeholder !== placeholder) {
+            el.placeholder = placeholder;
+          }
+        });
+        observer.observe(el, {
+          attributes: true,
+          attributeFilter: ["placeholder"],
+        });
+        observers.push(observer);
+      }
+    });
+
+    // final micro-task & delayed pass
+    queueMicrotask(() => {
+      INIT_FIELDS.forEach(({ id, placeholder }) => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.placeholder = placeholder;
+      });
+    });
+    const timeout = setTimeout(() => {
+      INIT_FIELDS.forEach(({ id, placeholder }) => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.placeholder = placeholder;
+      });
+    }, 800);
+
+    return () => {
+      clearTimeout(timeout);
+      listeners.forEach(({ el, evt, handler }) =>
+        el.removeEventListener(evt, handler)
+      );
+      observers.forEach((o) => o.disconnect());
+    };
   }, []);
 
   function handleLocationSelect(selectedLocation) {

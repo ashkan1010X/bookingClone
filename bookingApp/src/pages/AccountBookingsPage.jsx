@@ -40,36 +40,52 @@ export default function AccountBookingsPage() {
           bookings.map((booking, idx) => (
             <Link
               to={`/account/bookings/${booking._id}`}
-              className="relative flex gap-3 mt-3 bg-gray-200 rounded-3xl overflow-hidden border-transparent hover:shadow-lg transition-all duration-300 hover:bg-gray-300"
               key={idx}
+              className="relative flex flex-col sm:flex-row sm:items-stretch gap-3 mt-3 bg-gray-200 rounded-3xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:bg-gray-300"
             >
-              <div className="w-48">
+              {/* Image */}
+              <div className="w-full sm:w-48 shrink-0">
                 <PlaceImage place={booking.place} />
               </div>
-              <div className="flex-col w-full items-start overflow-hidden grow pr-3">
-                {/* Title*/}
-                <h2 className="text-2xl font-semibold text-gray-800 hover:text-indigo-600 transition-colors duration-300">
-                  {booking?.place?.title}
-                </h2>
-                {/* Date Range with Nights */}
-                <DatesnNights booking={booking} />
-                {/* Total Price */}
-                <div className="mt-3 text-gray-700">
-                  <p className="text-lg">
+              {/* Content */}
+              <div className="flex flex-col w-full grow px-3 pb-3 sm:pr-5 sm:pb-4">
+                {/* Title row with inline delete for mobile */}
+                <div className="flex items-start gap-3 mt-2 sm:mt-3">
+                  <h2 className="flex-1 text-xl sm:text-2xl font-semibold text-gray-800 leading-snug line-clamp-2 hover:text-indigo-600 transition-colors duration-300">
+                    {booking?.place?.title}
+                  </h2>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete(booking._id);
+                    }}
+                    className="sm:hidden shrink-0 p-2 -mr-1 mt-0.5 rounded-full text-gray-600 hover:text-red-700 hover:bg-red-100 active:scale-95 transition-all duration-200"
+                    aria-label="Delete booking"
+                    title="Delete"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+                <div className="mt-2 sm:mt-3">
+                  <DatesnNights booking={booking} />
+                </div>
+                <div className="mt-2 sm:mt-4 text-gray-700">
+                  <p className="text-base sm:text-lg">
                     <span className="text-green-600 font-bold">
                       Total Price: ${booking.price}
                     </span>
                   </p>
                 </div>
               </div>
-              {/* Delete Button */}
-              <div className="absolute top-3 right-5">
+              {/* Desktop / tablet delete (kept overlay style) */}
+              <div className="hidden sm:block absolute top-2 right-3 sm:top-3 sm:right-5 z-10">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     handleDelete(booking._id);
                   }}
-                  className="text-black rounded-lg hover:text-red-700 transform hover:scale-110 transition-transform duration-200"
+                  className="text-black hover:text-red-700 transform hover:scale-110 transition-transform duration-200"
+                  aria-label="Delete booking"
                   title="Delete"
                 >
                   <FaTrash />
