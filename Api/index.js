@@ -21,6 +21,9 @@ require('dotenv').config()
 
 const app = express()
 
+// Trust proxy for correct protocol (needed on Render behind proxy for secure cookies)
+app.set('trust proxy', 1)
+
 
 const bcryptSalt = bcrypt.genSaltSync(10)
 const jwtSecret = process.env.JWT_SECRET
@@ -35,9 +38,24 @@ app.use("/uploads", express.static(__dirname + "/uploads"))
 app.use(cookieParser());
 
 
+// Allowed origins (expandable)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://127.0.0.1:5173',
+  'https://bookngo.onrender.com'
+];
+
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:5173", "https://bookngo.onrender.com"]
+  origin: function (origin, callback) {
+    // Allow non-browser tools (origin undefined) or allowed origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, origin);
+    }
+    return callback(new Error('CORS not allowed for origin: ' + origin));
+  }
 }));
 
 app.post('/register', async (req, res) => {
@@ -71,13 +89,14 @@ app.post('/login', async (req, res) => {
     if (passVerify) {
       jwt.sign({ email: userInfo.email, id: userInfo._id }, jwtSecret, {}, (err, token) => {
         if (err) throw err
-        //console.log(token)  token is the data in a connected string
+        const isProd = process.env.NODE_ENV === 'production';
         res.cookie('token', token, {
           httpOnly: true,
-          secure: true,
-          sameSite: 'none'
+          secure: isProd, // only secure in production (Render provides HTTPS)
+          sameSite: isProd ? 'none' : 'lax',
+          path: '/',
+          maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
         }).json(userInfo)
-        console.log(token)
       })
 
     } else {
@@ -112,11 +131,13 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
+  const isProd = process.env.NODE_ENV === 'production';
   res.cookie('token', '', {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    expires: new Date(0)
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
+    expires: new Date(0),
+    path: '/'
   }).json(true)
 })
 
