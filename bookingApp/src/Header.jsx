@@ -59,7 +59,7 @@ export default function Header() {
       },
     ];
 
-    // Inject high z-index for calendar (once) so it's not hidden behind layout layers
+    // high z-index for calendar (once) so it's not hidden behind layout layers
     if (!document.getElementById("fp-zfix")) {
       const style = document.createElement("style");
       style.id = "fp-zfix";
