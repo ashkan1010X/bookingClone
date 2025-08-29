@@ -1,2 +1,27 @@
 # Ignore phantom Windows reserved name
 bookingApp/NUL
+
+# Node modules
+node_modules/
+Api/node_modules/
+bookingApp/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+
+# Local env files
+.env
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.log
